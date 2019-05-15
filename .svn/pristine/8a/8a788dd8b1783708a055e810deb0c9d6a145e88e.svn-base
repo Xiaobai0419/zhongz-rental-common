@@ -1,0 +1,5 @@
+wechat:
+  AppID: wx67c11d207099cd88
+  AppSecret: 913a34edc2888dc7fc8250206f224c19
+  httpsUrl: https://api.weixin.qq.com/sns/jscode2session
+  grantType: authorization_code

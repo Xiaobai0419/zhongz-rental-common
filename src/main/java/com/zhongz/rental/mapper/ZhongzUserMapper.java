@@ -1,0 +1,155 @@
+package com.zhongz.rental.mapper;
+
+import com.zhongz.rental.domain.ZhongzUser;
+import com.zhongz.rental.param.ZhongzUserOrderParam;
+import com.zhongz.rental.returnParam.ZhongzUserInvitedReturnParam;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+/**
+ * 用户 数据层
+ * 
+ * @author ruoyi
+ * @date 2019-04-15
+ */
+public interface ZhongzUserMapper 
+{
+	/**
+     * 查询用户信息
+     * 
+     * @param id 用户ID
+     * @return 用户信息
+     */
+	public ZhongzUser selectZhongzUserById(String id);
+
+	/**
+	 * 按微信小程序openid查询用户信息
+	 *
+	 * @param openId 用户小程序openId
+	 * @return 用户信息
+	 */
+	public ZhongzUser selectZhongzUserByOpenId(@Param("openId") String openId);
+
+	/**
+	 * 按邀请码查询用户信息
+	 *
+	 * @param invitationCode 用户邀请码
+	 * @return 用户信息
+	 */
+	public ZhongzUser selectZhongzUserByInvitationCode(@Param("invitationCode") String invitationCode);
+
+	/**
+	 * 按邀请人查询用户信息
+	 *
+	 * @param invitorId 邀请人id
+	 * @param limitStart
+	 * @param limitNum
+	 * @return 用户信息
+	 */
+	public List<ZhongzUserInvitedReturnParam> selectZhongzUserInvitedList(@Param("invitorId") String invitorId, @Param("invitationCode") String invitationCode, @Param("limitStart") Integer limitStart, @Param("limitNum") Integer limitNum);
+
+	/**
+	 * 批量查询用户信息
+	 *
+	 * @param ids 用户id集合
+	 * @return 用户信息
+	 */
+	public List<ZhongzUser> selectZhongzUserByIds(List<String> ids);
+
+	/**
+	 * 按微信小程序openid和sessionKey查询用户登录状态
+	 *
+	 * @param openid 用户小程序openid
+	 * @param sessionKey 用户小程序sessionKey
+	 * @return 用户信息
+	 */
+	public ZhongzUser selectZhongzUserByOpenIdAndSessionKey(@Param("openid") String openid,@Param("sessionKey") String sessionKey);
+
+	/**
+     * 查询用户列表
+     * 
+     * @param zhongzUser 用户信息
+     * @return 用户集合
+     */
+	public List<ZhongzUser> selectZhongzUserList(ZhongzUser zhongzUser);
+	
+	/**
+     * 新增用户
+     * 
+     * @param zhongzUser 用户信息
+     * @return 结果
+     */
+	public int insertZhongzUser(ZhongzUser zhongzUser);
+	
+	/**
+     * 修改用户
+     * 
+     * @param zhongzUser 用户信息
+     * @return 结果
+     */
+	public int updateZhongzUser(ZhongzUser zhongzUser);
+
+	/**
+	 * 按微信小程序openid修改用户
+	 *
+	 * @param zhongzUser 用户信息
+	 * @return 结果
+	 */
+	public int updateZhongzUserByOpenId(ZhongzUser zhongzUser);
+
+	/**
+	 * 删除用户（逻辑）
+	 *
+	 * @param id 用户ID
+	 * @return 结果
+	 */
+	public int deleteZhongzUserById1(String id);
+
+	/**
+	 * 批量删除用户（逻辑）
+	 *
+	 * @param ids 需要删除的数据ID
+	 * @return 结果
+	 */
+	public int deleteZhongzUserByIds1(String[] ids);
+
+	/**
+     * 删除用户
+     * 
+     * @param id 用户ID
+     * @return 结果
+     */
+	public int deleteZhongzUserById(String id);
+	
+	/**
+     * 批量删除用户
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	public int deleteZhongzUserByIds(String[] ids);
+
+	/**
+	 * 修改用户昵称
+	 *
+	 * @param zhongzUserOrderParam 用户信息
+	 * @return 结果
+	 */
+	public int updateZhongzUserNickName(ZhongzUserOrderParam zhongzUserOrderParam);
+
+	/**
+	 * 修改用户头像（上传文件并保存项目本地目录，并将生成的静态地址入库，需要配置工程静态Web资源）
+	 *
+	 * @param zhongzUserOrderParam 用户信息
+	 * @return 结果
+	 */
+	public int updateZhongzUserHeadPortrait(ZhongzUserOrderParam zhongzUserOrderParam);
+
+	/**
+	 * 更新登出时间
+	 * @param zhongzUserOrderParam
+	 * @return
+	 */
+	public int updateZhongzUserLogoutTime(ZhongzUserOrderParam zhongzUserOrderParam);
+}

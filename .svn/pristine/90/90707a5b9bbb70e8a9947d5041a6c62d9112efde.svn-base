@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzSuggestionMapper">
+    
+    <resultMap type="ZhongzSuggestion" id="ZhongzSuggestionResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="suggestTime"    column="suggest_time"    />
+        <result property="content"    column="content"    />
+        <result property="acceptStatus"    column="accept_status"    />
+        <result property="acceptorId"    column="acceptor_id"    />
+        <result property="acceptTime"    column="accept_time"    />
+        <result property="description"    column="description"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="userName"    column="user_name"    />
+    </resultMap>
+	
+	<sql id="selectZhongzSuggestionVo">
+        select id, user_id, suggest_time, content, accept_status, acceptor_id, accept_time, description, create_by, create_time, update_by, update_time, remark, status1 from zhongz_suggestion
+    </sql>
+    
+    <sql id="selectZhongzSuggestionJoinUser">
+        select a.id, a.user_id, a.suggest_time, a.content, a.accept_status, a.acceptor_id, a.accept_time, a.description, a.create_by, a.create_time, a.update_by, a.update_time, a.remark, a.status1,
+        b.nick_name,b.mobile,c.user_name
+        from zhongz_suggestion a join zhongz_user b on b.id=a.user_id
+        left join sys_user c on c.user_id=a.acceptor_id
+    </sql>
+	
+    <select id="selectZhongzSuggestionList" parameterType="ZhongzSuggestion" resultMap="ZhongzSuggestionResult">
+        <include refid="selectZhongzSuggestionVo"/>
+        <where>  
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="userId != null  and userId != '' "> and user_id = #{userId}</if>
+             <if test="suggestTime != null "> and suggest_time = #{suggestTime}</if>
+             <if test="content != null  and content != '' "> and content = #{content}</if>
+             <if test="acceptStatus != null "> and accept_status = #{acceptStatus}</if>
+             <if test="acceptorId != null  and acceptorId != '' "> and acceptor_id = #{acceptorId}</if>
+             <if test="acceptTime != null "> and accept_time = #{acceptTime}</if>
+             <if test="description != null  and description != '' "> and description = #{description}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="status1 != null  and status1 != '' "> and status1 = #{status1}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzSuggestionJoinUserList" parameterType="ZhongzSuggestion" resultMap="ZhongzSuggestionResult">
+        <include refid="selectZhongzSuggestionJoinUser"/>
+        <where>  
+            <if test="id != null  and id != '' "> and a.id = #{id}</if>
+             <if test="userId != null  and userId != '' "> and a.user_id = #{userId}</if>
+             <if test="suggestTime != null "> and a.suggest_time = #{suggestTime}</if>
+             <if test="content != null  and content != '' "> and a.content = #{content}</if>
+             <if test="acceptStatus != null "> and a.accept_status = #{acceptStatus}</if>
+             <if test="acceptorId != null  and acceptorId != '' "> and a.acceptor_id = #{acceptorId}</if>
+             <if test="acceptTime != null "> and a.accept_time = #{acceptTime}</if>
+             <if test="description != null  and description != '' "> and a.description = #{description}</if>
+             <if test="createBy != null  and createBy != '' "> and a.create_by = #{createBy}</if>
+             <if test="createTime != null "> and a.create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and a.update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and a.update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and a.remark = #{remark}</if>
+             <if test="status1 != null  and status1 != '' "> and a.status1 = #{status1}</if>
+             <if test="nickName != null  and nickName != '' "> and b.nick_name like concat('%', #{nickName}, '%')</if>
+             <if test="mobile != null  and mobile != '' "> and b.mobile like concat('%', #{mobile}, '%')</if>
+             <if test="userName != null  and userName != '' "> and c.user_name like concat('%', #{userName}, '%')</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzSuggestionById" parameterType="String" resultMap="ZhongzSuggestionResult">
+        <include refid="selectZhongzSuggestionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZhongzSuggestion" parameterType="ZhongzSuggestion">
+        insert into zhongz_suggestion
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="userId != null  and userId != ''  ">user_id,</if>
+			<if test="suggestTime != null  ">suggest_time,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="acceptStatus != null  ">accept_status,</if>
+			<if test="acceptorId != null  and acceptorId != ''  ">acceptor_id,</if>
+			<if test="acceptTime != null  ">accept_time,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="userId != null  and userId != ''  ">#{userId},</if>
+			<if test="suggestTime != null  ">#{suggestTime},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="acceptStatus != null  ">#{acceptStatus},</if>
+			<if test="acceptorId != null  and acceptorId != ''  ">#{acceptorId},</if>
+			<if test="acceptTime != null  ">#{acceptTime},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzSuggestion" parameterType="ZhongzSuggestion">
+        update zhongz_suggestion
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  and userId != ''  ">user_id = #{userId},</if>
+            <if test="suggestTime != null  ">suggest_time = #{suggestTime},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="acceptStatus != null  ">accept_status = #{acceptStatus},</if>
+            <if test="acceptorId != null  and acceptorId != ''  ">acceptor_id = #{acceptorId},</if>
+            <if test="acceptTime != null  ">accept_time = #{acceptTime},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteZhongzSuggestionById" parameterType="String">
+        delete from zhongz_suggestion where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzSuggestionByIds" parameterType="String">
+        delete from zhongz_suggestion where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateZhongzSuggestionByIds" parameterType="java.util.HashMap">
+        update zhongz_suggestion
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  and userId != ''  ">user_id = #{userId},</if>
+            <if test="suggestTime != null  ">suggest_time = #{suggestTime},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="acceptStatus != null  ">accept_status = #{acceptStatus},</if>
+            <if test="acceptorId != null  and acceptorId != ''  ">acceptor_id = #{acceptorId},</if>
+            <if test="acceptTime != null  ">accept_time = #{acceptTime},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id in 
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

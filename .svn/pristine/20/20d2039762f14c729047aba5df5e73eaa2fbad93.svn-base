@@ -1,0 +1,623 @@
+package com.zhongz.rental.domain;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import com.ruoyi.common.core.domain.BaseEntity;
+import java.util.Date;
+
+/**
+ * 合同表 zhongz_contract
+ * 
+ * @author ruoyi
+ * @date 2019-04-17
+ */
+@ApiModel(value="ZhongzContract", description="")
+public class ZhongzContract extends BaseEntity
+{
+	private static final long serialVersionUID = 1L;
+	
+	/** 合同类别 */
+	@ApiModelProperty(value="合同类别", dataType="String")
+	private String category;
+	/** 合同类型 */
+	@ApiModelProperty(value="合同类型", dataType="String")
+	private String type;
+	/** 租住方式（整租、合租） */
+	@ApiModelProperty(value="租住方式（整租、合租）", dataType="Integer")
+	private Integer rentType;
+	/** 租住房屋id */
+	@ApiModelProperty(value="租住房屋id", dataType="String")
+	private String houseId;
+	/** 租住房间id */
+	@ApiModelProperty(value="租住房间id", dataType="String")
+	private String roomId;
+	/** 承租人id */
+	@ApiModelProperty(value="承租人id", dataType="String")
+	private String tenantId;
+	/** 委托代理人id */
+	@ApiModelProperty(value="委托代理人id", dataType="String")
+	private String entrustedAgentId;
+	/** 受理人id */
+	@ApiModelProperty(value="受理人id", dataType="String")
+	private String renterId;
+	/** 受理时间 */
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8"
+	)
+	@ApiModelProperty(value="受理时间", dataType="Date")
+	private Date acceptTime;
+	/** 受理状态 */
+	@ApiModelProperty(value="受理状态", dataType="Integer")
+	private Integer acceptStatus;
+	/** 受理性质 */
+	@ApiModelProperty(value="受理性质", dataType="Integer")
+	private Integer acceptType;
+	/** 缴费状态 */
+	@ApiModelProperty(value="缴费状态", dataType="Integer")
+	private Integer payed;
+	/** 合同编号 */
+	@ApiModelProperty(value="合同编号", dataType="String")
+	private String contractId;
+	/** 合同状态 */
+	@ApiModelProperty(value="合同状态", dataType="Integer")
+	private Integer contractStatus;
+	/** 起租日期 */
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8"
+	)
+	@ApiModelProperty(value="起租日期", dataType="Date")
+	private Date rentStartTime;
+	/** 止租日期 */
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8"
+	)
+	@ApiModelProperty(value="止租日期", dataType="Date")
+	private Date rentEndTime;
+	/** 签约日期 */
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8"
+	)
+	@ApiModelProperty(value="签约日期", dataType="Date")
+	private Date signedTime;
+	/** 续费日期 */
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8"
+	)
+	@ApiModelProperty(value="续费日期", dataType="Date")
+	private Date continuationTime;
+	/** 续费周期 */
+	@ApiModelProperty(value="续费周期", dataType="Integer")
+	private Integer continuationPeriod;
+	/** 月租金 */
+	@ApiModelProperty(value="月租金", dataType="Double")
+	private Double monthlyRent;
+	/** 押金标准 */
+	@ApiModelProperty(value="押金标准", dataType="Integer")
+	private Integer pledgeMonth;
+	/** 每平米供暖费 */
+	@ApiModelProperty(value="每平米供暖费", dataType="Double")
+	private Double heatingPerSquare;
+	/** 每平米物业费 */
+	@ApiModelProperty(value="每平米物业费", dataType="Double")
+	private Double managementPerSquare;
+	/** 计费面积 */
+	@ApiModelProperty(value="计费面积", dataType="Double")
+	private Double area;
+	/** 水表值 */
+	@ApiModelProperty(value="水表值", dataType="Double")
+	private Double waterWatch;
+	/** 电表值 */
+	@ApiModelProperty(value="电表值", dataType="Double")
+	private Double electricWatch;
+	/** 燃气表值 */
+	@ApiModelProperty(value="燃气表值", dataType="Double")
+	private Double gasWatch;
+	/** 欠款 */
+	@ApiModelProperty(value="欠款", dataType="Double")
+	private Double debt;
+	/** 租金总计 */
+	@ApiModelProperty(value="租金总计", dataType="Double")
+	private Double rentTotal;
+	/** 支付方式 */
+	@ApiModelProperty(value="支付方式", dataType="Integer")
+	private Integer payPeriod;
+	/** 付款方式 */
+	@ApiModelProperty(value="付款方式", dataType="Integer")
+	private Integer payType;
+	/** 邀请码 */
+	@ApiModelProperty(value="邀请码", dataType="String")
+	private String invitationCode;
+	/** 优惠券 */
+	@ApiModelProperty(value="优惠券", dataType="String")
+	private String coupon;
+	/** 优惠说明 */
+	@ApiModelProperty(value="优惠说明", dataType="String")
+	private String couponComment;
+	/** 真实姓名 */
+	@ApiModelProperty(value="真实姓名", dataType="String")
+	private String name;
+	/** 证件类型 */
+	@ApiModelProperty(value="证件类型", dataType="Integer")
+	private Integer identityCardType;
+	/** 证件号码 */
+	@ApiModelProperty(value="证件号码", dataType="String")
+	private String identityCardId;
+	/** 国籍id */
+	@ApiModelProperty(value="国籍id", dataType="String")
+	private String nationId;
+	/** 户口所在地id */
+	@ApiModelProperty(value="户口所在地id", dataType="String")
+	private String registeredResidenceId;
+	/** 出生日期 */
+	@JsonFormat(
+			pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8"
+	)
+	@ApiModelProperty(value="出生日期", dataType="Date")
+	private Date birthday;
+	/** 紧急联系人 */
+	@ApiModelProperty(value="紧急联系人", dataType="String")
+	private String emergencyContact;
+	/** 紧急联系人电话 */
+	@ApiModelProperty(value="紧急联系人电话", dataType="String")
+	private String emergencyMobile;
+	/** 是否有未签约状态续约订单 */
+	@ApiModelProperty(value="是否有未签约状态续约订单", dataType="Integer")
+	private Integer renewOrder = 0;
+
+	@ApiModelProperty(value="关联房屋", dataType="ZhongzHouse")
+	private ZhongzHouse house;
+
+    public Integer getRenewOrder() {
+        return renewOrder;
+    }
+
+    public void setRenewOrder(Integer renewOrder) {
+        this.renewOrder = renewOrder;
+    }
+
+    public ZhongzHouse getHouse() {
+		return house;
+	}
+
+	public void setHouse(ZhongzHouse house) {
+		this.house = house;
+	}
+
+	public void setCategory(String category)
+	{
+		this.category = category;
+	}
+
+	public String getCategory() 
+	{
+		return category;
+	}
+	public void setType(String type) 
+	{
+		this.type = type;
+	}
+
+	public String getType() 
+	{
+		return type;
+	}
+	public void setRentType(Integer rentType) 
+	{
+		this.rentType = rentType;
+	}
+
+	public Integer getRentType() 
+	{
+		return rentType;
+	}
+	public void setHouseId(String houseId) 
+	{
+		this.houseId = houseId;
+	}
+
+	public String getHouseId() 
+	{
+		return houseId;
+	}
+	public void setRoomId(String roomId) 
+	{
+		this.roomId = roomId;
+	}
+
+	public String getRoomId() 
+	{
+		return roomId;
+	}
+	public void setTenantId(String tenantId) 
+	{
+		this.tenantId = tenantId;
+	}
+
+	public String getTenantId() 
+	{
+		return tenantId;
+	}
+	public void setEntrustedAgentId(String entrustedAgentId) 
+	{
+		this.entrustedAgentId = entrustedAgentId;
+	}
+
+	public String getEntrustedAgentId() 
+	{
+		return entrustedAgentId;
+	}
+	public void setRenterId(String renterId) 
+	{
+		this.renterId = renterId;
+	}
+
+	public String getRenterId() 
+	{
+		return renterId;
+	}
+	public void setAcceptTime(Date acceptTime) 
+	{
+		this.acceptTime = acceptTime;
+	}
+
+	public Date getAcceptTime() 
+	{
+		return acceptTime;
+	}
+	public void setAcceptStatus(Integer acceptStatus) 
+	{
+		this.acceptStatus = acceptStatus;
+	}
+
+	public Integer getAcceptStatus() 
+	{
+		return acceptStatus;
+	}
+	public void setAcceptType(Integer acceptType) 
+	{
+		this.acceptType = acceptType;
+	}
+
+	public Integer getAcceptType() 
+	{
+		return acceptType;
+	}
+	public void setPayed(Integer payed) 
+	{
+		this.payed = payed;
+	}
+
+	public Integer getPayed() 
+	{
+		return payed;
+	}
+	public void setContractId(String contractId) 
+	{
+		this.contractId = contractId;
+	}
+
+	public String getContractId() 
+	{
+		return contractId;
+	}
+	public void setContractStatus(Integer contractStatus) 
+	{
+		this.contractStatus = contractStatus;
+	}
+
+	public Integer getContractStatus() 
+	{
+		return contractStatus;
+	}
+	public void setRentStartTime(Date rentStartTime) 
+	{
+		this.rentStartTime = rentStartTime;
+	}
+
+	public Date getRentStartTime() 
+	{
+		return rentStartTime;
+	}
+	public void setRentEndTime(Date rentEndTime) 
+	{
+		this.rentEndTime = rentEndTime;
+	}
+
+	public Date getRentEndTime() 
+	{
+		return rentEndTime;
+	}
+	public void setSignedTime(Date signedTime) 
+	{
+		this.signedTime = signedTime;
+	}
+
+	public Date getSignedTime() 
+	{
+		return signedTime;
+	}
+	public void setContinuationTime(Date continuationTime) 
+	{
+		this.continuationTime = continuationTime;
+	}
+
+	public Date getContinuationTime() 
+	{
+		return continuationTime;
+	}
+	public void setContinuationPeriod(Integer continuationPeriod) 
+	{
+		this.continuationPeriod = continuationPeriod;
+	}
+
+	public Integer getContinuationPeriod() 
+	{
+		return continuationPeriod;
+	}
+	public void setMonthlyRent(Double monthlyRent) 
+	{
+		this.monthlyRent = monthlyRent;
+	}
+
+	public Double getMonthlyRent() 
+	{
+		return monthlyRent;
+	}
+	public void setPledgeMonth(Integer pledgeMonth) 
+	{
+		this.pledgeMonth = pledgeMonth;
+	}
+
+	public Integer getPledgeMonth() 
+	{
+		return pledgeMonth;
+	}
+	public void setHeatingPerSquare(Double heatingPerSquare) 
+	{
+		this.heatingPerSquare = heatingPerSquare;
+	}
+
+	public Double getHeatingPerSquare() 
+	{
+		return heatingPerSquare;
+	}
+	public void setManagementPerSquare(Double managementPerSquare) 
+	{
+		this.managementPerSquare = managementPerSquare;
+	}
+
+	public Double getManagementPerSquare() 
+	{
+		return managementPerSquare;
+	}
+	public void setArea(Double area) 
+	{
+		this.area = area;
+	}
+
+	public Double getArea() 
+	{
+		return area;
+	}
+	public void setWaterWatch(Double waterWatch) 
+	{
+		this.waterWatch = waterWatch;
+	}
+
+	public Double getWaterWatch() 
+	{
+		return waterWatch;
+	}
+	public void setElectricWatch(Double electricWatch) 
+	{
+		this.electricWatch = electricWatch;
+	}
+
+	public Double getElectricWatch() 
+	{
+		return electricWatch;
+	}
+	public void setGasWatch(Double gasWatch) 
+	{
+		this.gasWatch = gasWatch;
+	}
+
+	public Double getGasWatch() 
+	{
+		return gasWatch;
+	}
+	public void setDebt(Double debt) 
+	{
+		this.debt = debt;
+	}
+
+	public Double getDebt() 
+	{
+		return debt;
+	}
+	public void setRentTotal(Double rentTotal) 
+	{
+		this.rentTotal = rentTotal;
+	}
+
+	public Double getRentTotal() 
+	{
+		return rentTotal;
+	}
+	public void setPayPeriod(Integer payPeriod) 
+	{
+		this.payPeriod = payPeriod;
+	}
+
+	public Integer getPayPeriod() 
+	{
+		return payPeriod;
+	}
+	public void setPayType(Integer payType) 
+	{
+		this.payType = payType;
+	}
+
+	public Integer getPayType() 
+	{
+		return payType;
+	}
+	public void setInvitationCode(String invitationCode) 
+	{
+		this.invitationCode = invitationCode;
+	}
+
+	public String getInvitationCode() 
+	{
+		return invitationCode;
+	}
+	public void setCoupon(String coupon) 
+	{
+		this.coupon = coupon;
+	}
+
+	public String getCoupon() 
+	{
+		return coupon;
+	}
+	public void setCouponComment(String couponComment) 
+	{
+		this.couponComment = couponComment;
+	}
+
+	public String getCouponComment() 
+	{
+		return couponComment;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public String getName() 
+	{
+		return name;
+	}
+	public void setIdentityCardType(Integer identityCardType) 
+	{
+		this.identityCardType = identityCardType;
+	}
+
+	public Integer getIdentityCardType() 
+	{
+		return identityCardType;
+	}
+	public void setIdentityCardId(String identityCardId) 
+	{
+		this.identityCardId = identityCardId;
+	}
+
+	public String getIdentityCardId() 
+	{
+		return identityCardId;
+	}
+	public void setNationId(String nationId) 
+	{
+		this.nationId = nationId;
+	}
+
+	public String getNationId() 
+	{
+		return nationId;
+	}
+	public void setRegisteredResidenceId(String registeredResidenceId) 
+	{
+		this.registeredResidenceId = registeredResidenceId;
+	}
+
+	public String getRegisteredResidenceId() 
+	{
+		return registeredResidenceId;
+	}
+	public void setBirthday(Date birthday) 
+	{
+		this.birthday = birthday;
+	}
+
+	public Date getBirthday() 
+	{
+		return birthday;
+	}
+	public void setEmergencyContact(String emergencyContact) 
+	{
+		this.emergencyContact = emergencyContact;
+	}
+
+	public String getEmergencyContact() 
+	{
+		return emergencyContact;
+	}
+	public void setEmergencyMobile(String emergencyMobile) 
+	{
+		this.emergencyMobile = emergencyMobile;
+	}
+
+	public String getEmergencyMobile() 
+	{
+		return emergencyMobile;
+	}
+
+    @Override
+	public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("id", getId())
+            .append("category", getCategory())
+            .append("type", getType())
+            .append("rentType", getRentType())
+            .append("houseId", getHouseId())
+            .append("roomId", getRoomId())
+            .append("tenantId", getTenantId())
+            .append("entrustedAgentId", getEntrustedAgentId())
+            .append("renterId", getRenterId())
+            .append("acceptTime", getAcceptTime())
+            .append("acceptStatus", getAcceptStatus())
+            .append("acceptType", getAcceptType())
+            .append("payed", getPayed())
+            .append("contractId", getContractId())
+            .append("contractStatus", getContractStatus())
+            .append("rentStartTime", getRentStartTime())
+            .append("rentEndTime", getRentEndTime())
+            .append("signedTime", getSignedTime())
+            .append("continuationTime", getContinuationTime())
+            .append("continuationPeriod", getContinuationPeriod())
+            .append("monthlyRent", getMonthlyRent())
+            .append("pledgeMonth", getPledgeMonth())
+            .append("heatingPerSquare", getHeatingPerSquare())
+            .append("managementPerSquare", getManagementPerSquare())
+            .append("area", getArea())
+            .append("waterWatch", getWaterWatch())
+            .append("electricWatch", getElectricWatch())
+            .append("gasWatch", getGasWatch())
+            .append("debt", getDebt())
+            .append("rentTotal", getRentTotal())
+            .append("payPeriod", getPayPeriod())
+            .append("payType", getPayType())
+            .append("invitationCode", getInvitationCode())
+            .append("coupon", getCoupon())
+            .append("couponComment", getCouponComment())
+            .append("createBy", getCreateBy())
+            .append("createTime", getCreateTime())
+            .append("updateBy", getUpdateBy())
+            .append("updateTime", getUpdateTime())
+            .append("remark", getRemark())
+            .append("status1", getStatus1())
+            .append("name", getName())
+            .append("identityCardType", getIdentityCardType())
+            .append("identityCardId", getIdentityCardId())
+            .append("nationId", getNationId())
+            .append("registeredResidenceId", getRegisteredResidenceId())
+            .append("birthday", getBirthday())
+            .append("emergencyContact", getEmergencyContact())
+            .append("emergencyMobile", getEmergencyMobile())
+            .toString();
+    }
+}

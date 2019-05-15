@@ -1,0 +1,33 @@
+package com.zhongz.rental.param;
+
+import com.zhongz.rental.param.base.BaseParam;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+/**
+ * 用户预约 zhongz_user
+ * 
+ * @author ruoyi
+ * @date 2019-04-15
+ */
+@Data
+@ApiModel(value="ZhongzUserParam", description="")
+public class ZhongzUserServiceOrderParam extends BaseParam
+{
+	/** 微信小程序用户唯一标识 */
+	@ApiModelProperty(value="微信小程序用户唯一标识", dataType="String")
+	private String openid;
+	/** 微信小程序用户会话密钥 */
+	@ApiModelProperty(value="微信小程序用户会话密钥", dataType="String")
+	private String sessionKey;
+	/** 房屋id */
+	@ApiModelProperty(value="房屋id", dataType="String")
+	private String houseId;
+	/** 请求服务类型 */
+	@ApiModelProperty(value="请求服务类型", dataType="Integer")
+	private Integer requestServiceType;
+	/** 服务描述内容 */
+	@ApiModelProperty(value="服务描述内容", dataType="String")
+	private String serviceDescription;
+}

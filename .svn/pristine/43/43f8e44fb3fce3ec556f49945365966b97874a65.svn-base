@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzManagerMapper">
+    
+    <resultMap type="ZhongzManager" id="ZhongzManagerResult">
+        <result property="id"    column="id"    />
+        <result property="onlineState"    column="online_state"    />
+        <result property="phone"    column="phone"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="description1"    column="description1"    />
+        <result property="description2"    column="description2"    />
+        <result property="wechatQrcode"    column="wechat_qrcode"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+    </resultMap>
+	
+	<sql id="selectZhongzManagerVo">
+        select id, online_state, phone, mobile, description1, description2, wechat_qrcode, create_by, create_time, update_by, update_time, remark, status1 from zhongz_manager
+    </sql>
+	
+    <select id="selectZhongzManagerList" parameterType="ZhongzManager" resultMap="ZhongzManagerResult">
+        <include refid="selectZhongzManagerVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="onlineState != null "> and online_state = #{onlineState}</if>
+             <if test="phone != null  and phone != '' "> and phone = #{phone}</if>
+             <if test="mobile != null  and mobile != '' "> and mobile = #{mobile}</if>
+             <if test="description1 != null  and description1 != '' "> and description1 = #{description1}</if>
+             <if test="description2 != null  and description2 != '' "> and description2 = #{description2}</if>
+            <if test="wechatQrcode != null  and wechatQrcode != '' "> and wechat_qrcode = #{wechatQrcode}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzManagerById" parameterType="String" resultMap="ZhongzManagerResult">
+        <include refid="selectZhongzManagerVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectZhongzManager" resultMap="ZhongzManagerResult">
+        <include refid="selectZhongzManagerVo"/>
+        where status1 = '0'
+        order by update_time desc limit 0,1
+    </select>
+
+    <insert id="insertZhongzManager" parameterType="ZhongzManager">
+        insert into zhongz_manager
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="onlineState != null  ">online_state,</if>
+			<if test="phone != null  and phone != ''  ">phone,</if>
+			<if test="mobile != null  and mobile != ''  ">mobile,</if>
+			<if test="description1 != null  and description1 != ''  ">description1,</if>
+			<if test="description2 != null  and description2 != ''  ">description2,</if>
+            <if test="wechatQrcode != null  and wechatQrcode != '' ">wechat_qrcode,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="onlineState != null  ">#{onlineState},</if>
+			<if test="phone != null  and phone != ''  ">#{phone},</if>
+			<if test="mobile != null  and mobile != ''  ">#{mobile},</if>
+			<if test="description1 != null  and description1 != ''  ">#{description1},</if>
+			<if test="description2 != null  and description2 != ''  ">#{description2},</if>
+            <if test="wechatQrcode != null  and wechatQrcode != '' ">#{wechatQrcode},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzManager" parameterType="ZhongzManager">
+        update zhongz_manager
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="onlineState != null  ">online_state = #{onlineState},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="mobile != null  and mobile != ''  ">mobile = #{mobile},</if>
+            <if test="description1 != null  and description1 != ''  ">description1 = #{description1},</if>
+            <if test="description2 != null  and description2 != ''  ">description2 = #{description2},</if>
+            <if test="wechatQrcode != null  and wechatQrcode != '' ">wechat_qrcode = #{wechatQrcode},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzManagerById1" parameterType="String">
+        update zhongz_manager set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzManagerByIds1" parameterType="String">
+        update zhongz_manager set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzManagerById" parameterType="String">
+        delete from zhongz_manager where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzManagerByIds" parameterType="String">
+        delete from zhongz_manager where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

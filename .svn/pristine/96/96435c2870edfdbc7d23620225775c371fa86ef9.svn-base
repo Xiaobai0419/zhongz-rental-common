@@ -1,0 +1,191 @@
+package com.zhongz.rental.domain;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import com.ruoyi.common.core.domain.BaseEntity;
+import java.util.Date;
+
+/**
+ * 用户表 zhongz_user
+ * 
+ * @author ruoyi
+ * @date 2019-04-15
+ */
+@ApiModel(value="ZhongzUser", description="")
+public class ZhongzUser extends BaseEntity
+{
+	private static final long serialVersionUID = 1L;
+	
+	/** 用户昵称 */
+	@ApiModelProperty(value="用户昵称", dataType="String")
+	private String nickName;
+	/** 联系电话 */
+	@ApiModelProperty(value="联系电话", dataType="String")
+	private String mobile;
+	/** 微信小程序用户唯一标识 */
+	@ApiModelProperty(value="微信小程序用户唯一标识", dataType="String")
+	private String openid;
+	/** 微信小程序用户会话密钥 */
+	@ApiModelProperty(value="微信小程序用户会话密钥", dataType="String")
+	private String sessionKey;
+	/** 用户在微信开放平台唯一标识符 */
+	@ApiModelProperty(value="用户在微信开放平台唯一标识符", dataType="String")
+	private String unionid;
+	/** 头像url */
+	@ApiModelProperty(value="头像url", dataType="String")
+	private String headPortrait;
+	/** 性别 */
+	@ApiModelProperty(value="性别", dataType="Integer")
+	private Integer gender;
+	/** 用户类型 */
+	@ApiModelProperty(value="用户类型", dataType="Integer")
+	private Integer userType;
+	/** 邀请码 */
+	@ApiModelProperty(value="邀请码", dataType="String")
+	private String invitationCode;
+	/** 我的邀请人id */
+	@ApiModelProperty(value="我的邀请人id", dataType="String")
+	private String invitorId;
+	/** 注册时间 */
+	@ApiModelProperty(value="注册时间", dataType="Date")
+	private Date registerTime;
+	/** 最后一次登录时间 */
+	@ApiModelProperty(value="最后一次登录时间", dataType="Date")
+	private Date lastLoginTime;
+
+	public void setNickName(String nickName) 
+	{
+		this.nickName = nickName;
+	}
+
+	public String getNickName() 
+	{
+		return nickName;
+	}
+	public void setMobile(String mobile) 
+	{
+		this.mobile = mobile;
+	}
+
+	public String getMobile() 
+	{
+		return mobile;
+	}
+	public void setOpenid(String openid) 
+	{
+		this.openid = openid;
+	}
+
+	public String getOpenid() 
+	{
+		return openid;
+	}
+	public void setSessionKey(String sessionKey) 
+	{
+		this.sessionKey = sessionKey;
+	}
+
+	public String getSessionKey() 
+	{
+		return sessionKey;
+	}
+	public void setUnionid(String unionid) 
+	{
+		this.unionid = unionid;
+	}
+
+	public String getUnionid() 
+	{
+		return unionid;
+	}
+	public void setHeadPortrait(String headPortrait) 
+	{
+		this.headPortrait = headPortrait;
+	}
+
+	public String getHeadPortrait() 
+	{
+		return headPortrait;
+	}
+	public void setGender(Integer gender) 
+	{
+		this.gender = gender;
+	}
+
+	public Integer getGender() 
+	{
+		return gender;
+	}
+	public void setUserType(Integer userType) 
+	{
+		this.userType = userType;
+	}
+
+	public Integer getUserType() 
+	{
+		return userType;
+	}
+	public void setInvitationCode(String invitationCode) 
+	{
+		this.invitationCode = invitationCode;
+	}
+
+	public String getInvitationCode() 
+	{
+		return invitationCode;
+	}
+	public void setInvitorId(String invitorId) 
+	{
+		this.invitorId = invitorId;
+	}
+
+	public String getInvitorId() 
+	{
+		return invitorId;
+	}
+	public void setRegisterTime(Date registerTime) 
+	{
+		this.registerTime = registerTime;
+	}
+
+	public Date getRegisterTime() 
+	{
+		return registerTime;
+	}
+	public void setLastLoginTime(Date lastLoginTime) 
+	{
+		this.lastLoginTime = lastLoginTime;
+	}
+
+	public Date getLastLoginTime() 
+	{
+		return lastLoginTime;
+	}
+
+    @Override
+	public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("id", getId())
+            .append("nickName", getNickName())
+            .append("mobile", getMobile())
+            .append("openid", getOpenid())
+            .append("sessionKey", getSessionKey())
+            .append("unionid", getUnionid())
+            .append("headPortrait", getHeadPortrait())
+            .append("gender", getGender())
+            .append("userType", getUserType())
+            .append("invitationCode", getInvitationCode())
+            .append("invitorId", getInvitorId())
+            .append("registerTime", getRegisterTime())
+            .append("lastLoginTime", getLastLoginTime())
+            .append("createBy", getCreateBy())
+            .append("createTime", getCreateTime())
+            .append("updateBy", getUpdateBy())
+            .append("updateTime", getUpdateTime())
+            .append("remark", getRemark())
+            .append("status1", getStatus1())
+            .toString();
+    }
+}

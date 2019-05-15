@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzCommentMapper">
+    
+    <resultMap type="ZhongzComment" id="ZhongzCommentResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="content"    column="content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+    </resultMap>
+	
+	<sql id="selectZhongzCommentVo">
+        select id, user_id, name, mobile, content, create_by, create_time, update_by, update_time, remark, status1 from zhongz_comment
+    </sql>
+	
+    <select id="selectZhongzCommentList" parameterType="ZhongzComment" resultMap="ZhongzCommentResult">
+        <include refid="selectZhongzCommentVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="userId != null  and userId != '' "> and user_id = #{userId}</if>
+             <if test="name != null  and name != '' "> and name = #{name}</if>
+             <if test="mobile != null  and mobile != '' "> and mobile = #{mobile}</if>
+             <if test="content != null  and content != '' "> and content = #{content}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzCommentById" parameterType="String" resultMap="ZhongzCommentResult">
+        <include refid="selectZhongzCommentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZhongzComment" parameterType="ZhongzComment">
+        insert into zhongz_comment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="userId != null  and userId != ''  ">user_id,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+			<if test="mobile != null  and mobile != ''  ">mobile,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="userId != null  and userId != ''  ">#{userId},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+			<if test="mobile != null  and mobile != ''  ">#{mobile},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzComment" parameterType="ZhongzComment">
+        update zhongz_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null  and userId != ''  ">user_id = #{userId},</if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="mobile != null  and mobile != ''  ">mobile = #{mobile},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzCommentById1" parameterType="String">
+        update zhongz_comment set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzCommentByIds1" parameterType="String">
+        update zhongz_comment set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzCommentById" parameterType="String">
+        delete from zhongz_comment where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzCommentByIds" parameterType="String">
+        delete from zhongz_comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

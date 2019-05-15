@@ -1,0 +1,166 @@
+package com.zhongz.rental.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import com.zhongz.rental.common.utils.OrderUtils;
+import com.zhongz.rental.domain.ZhongzContract;
+import com.zhongz.rental.domain.ZhongzHouse;
+import com.zhongz.rental.domain.ZhongzOrder;
+import com.zhongz.rental.domain.ZhongzUser;
+import com.zhongz.rental.mapper.ZhongzContractMapper;
+import com.zhongz.rental.mapper.ZhongzHouseMapper;
+import com.zhongz.rental.mapper.ZhongzOrderMapper;
+import com.zhongz.rental.mapper.ZhongzUserMapper;
+import com.zhongz.rental.param.ZhongzUserOrderParam;
+import com.zhongz.rental.result.base.Result;
+import com.zhongz.rental.service.IZhongzOrderService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * 订单 服务层实现
+ * 
+ * @author ruoyi
+ * @date 2019-04-17
+ */
+@Service
+public class ZhongzOrderServiceImpl implements IZhongzOrderService
+{
+	@Autowired
+	private ZhongzOrderMapper zhongzOrderMapper;
+	@Autowired
+	private ZhongzContractMapper zhongzContractMapper;
+	@Autowired
+	private ZhongzUserMapper zhongzUserMapper;
+	@Autowired
+	private ZhongzHouseMapper zhongzHouseMapper;
+	@Autowired
+	private OrderUtils orderUtils;
+
+	/**
+     * 查询订单信息
+     * 
+     * @param id 订单ID
+     * @return 订单信息
+     */
+    @Override
+	public ZhongzOrder selectZhongzOrderById(String id)
+	{
+	    return zhongzOrderMapper.selectZhongzOrderById(id);
+	}
+	
+	/**
+     * 查询订单列表
+     * 
+     * @param zhongzOrder 订单信息
+     * @return 订单集合
+     */
+	@Override
+	public List<ZhongzOrder> selectZhongzOrderList(ZhongzOrder zhongzOrder)
+	{
+	    return zhongzOrderMapper.selectZhongzOrderList(zhongzOrder);
+	}
+	
+    /**
+     * 新增订单
+     * 
+     * @param zhongzUserOrderParam 用户预约订单信息
+     * @return 结果
+     */
+	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_COMMITTED,readOnly = false)
+	@Override
+	public Result insertZhongzOrder(ZhongzUserOrderParam zhongzUserOrderParam)
+	{
+		Result result = new Result();
+	    //判断登录，查询用户信息--增加了统一拦截器，这里的登录判断可去掉
+		String openid = zhongzUserOrderParam.getOpenid();
+		String sessionKey = zhongzUserOrderParam.getSessionKey();
+		if(StringUtils.isBlank(openid) || StringUtils.isBlank(sessionKey)) {
+			result.setSuccess(false);
+			result.setResultCode(400);
+			result.setMessage("请先登录");
+			return result;
+		}
+		//判断登录态（可能sessionKey登录过期）
+		ZhongzUser user = zhongzUserMapper.selectZhongzUserByOpenIdAndSessionKey(openid,sessionKey);
+		if(user == null) {
+			result.setSuccess(false);
+			result.setResultCode(403);
+			result.setMessage("请重新登录");
+			return result;
+		}
+		//查询房屋信息，尤其整租/合租
+		String houseId = zhongzUserOrderParam.getHouseId();
+		if(StringUtils.isBlank(houseId)) {
+			result.setSuccess(false);
+			result.setResultCode(400);
+			result.setMessage("缺少房屋信息参数");
+			return result;
+		}
+		//查询该用户对该房屋的预约订单（合同），查到需要更新，或返回错误提示
+		Integer contractByUserAndHouse = zhongzContractMapper.selectZhongzContractByUserAndHouse(user.getId(),houseId);
+		if(contractByUserAndHouse > 0) {
+			result.setSuccess(false);
+			result.setResultCode(403);
+			result.setMessage("您已预约该房屋");
+			return result;
+		}
+		ZhongzHouse house = zhongzHouseMapper.selectZhongzHouseById(houseId);
+		if(house == null) {
+			result.setSuccess(false);
+			result.setResultCode(403);
+			result.setMessage("未查到房屋信息");
+			return result;
+		}
+		//预生成订单
+		ZhongzOrder order = orderUtils.generateOrder("YYDD");
+		order.preInsert();
+		order.setOrderTime(new Date());
+		//预生成订单关联合同，将合同id写入订单合同id字段
+		ZhongzContract contract = new ZhongzContract();
+		contract.preInsert();
+		order.setContractId(contract.getId());
+		//用户、房屋信息写入合同
+		contract.setTenantId(user.getId());
+		contract.setHouseId(houseId);
+		contract.setRentType(house.getRentType());
+		//订单插入订单表，合同插入合同表，通过合同id一对一关联，属于该用户，返回成功失败信息
+		zhongzOrderMapper.insertZhongzOrder(order);
+		zhongzContractMapper.insertZhongzContract(contract);
+		result.setSuccess(true);
+		result.setResultCode(200);
+		result.setMessage("预约成功");
+        return result;
+	}
+	
+	/**
+     * 修改订单
+     * 
+     * @param zhongzOrder 订单信息
+     * @return 结果
+     */
+	@Override
+	public int updateZhongzOrder(ZhongzOrder zhongzOrder)
+	{
+	    return zhongzOrderMapper.updateZhongzOrder(zhongzOrder);
+	}
+
+	/**
+     * 删除订单对象
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	@Override
+	public int deleteZhongzOrderByIds(String ids)
+	{
+		return zhongzOrderMapper.deleteZhongzOrderByIds1(Convert.toStrArray(ids));
+	}
+	
+}

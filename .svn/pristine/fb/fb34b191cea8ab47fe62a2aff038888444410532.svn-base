@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ZhongzHotTagMapper">
+    
+    <resultMap type="ZhongzHotTag" id="ZhongzHotTagResult">
+        <result property="id"    column="id"    />
+        <result property="typeCode"    column="type_code"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="hotValue"    column="hot_value"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+    </resultMap>
+	
+	<sql id="selectZhongzHotTagVo">
+        select id, type_code, type_name, hot_value, create_by, create_time, update_by, update_time, remark, status1 from zhongz_hot_tag
+    </sql>
+	
+    <select id="selectZhongzHotTagList" parameterType="ZhongzHotTag" resultMap="ZhongzHotTagResult">
+        <include refid="selectZhongzHotTagVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="typeCode != null "> and type_code = #{typeCode}</if>
+             <if test="typeName != null  and typeName != '' "> and type_name = #{typeName}</if>
+             <if test="hotValue != null "> and hot_value = #{hotValue}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzHotTagById" parameterType="String" resultMap="ZhongzHotTagResult">
+        <include refid="selectZhongzHotTagVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZhongzHotTag" parameterType="ZhongzHotTag">
+        insert into zhongz_hot_tag
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="typeCode != null  ">type_code,</if>
+			<if test="typeName != null  and typeName != ''  ">type_name,</if>
+			<if test="hotValue != null  ">hot_value,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="typeCode != null  ">#{typeCode},</if>
+			<if test="typeName != null  and typeName != ''  ">#{typeName},</if>
+			<if test="hotValue != null  ">#{hotValue},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzHotTag" parameterType="ZhongzHotTag">
+        update zhongz_hot_tag
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeCode != null  ">type_code = #{typeCode},</if>
+            <if test="typeName != null  and typeName != ''  ">type_name = #{typeName},</if>
+            <if test="hotValue != null  ">hot_value = #{hotValue},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzHotTagById1" parameterType="String">
+        update zhongz_hot_tag set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzHotTagByIds1" parameterType="String">
+        update zhongz_hot_tag set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzHotTagById" parameterType="String">
+        delete from zhongz_hot_tag where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzHotTagByIds" parameterType="String">
+        delete from zhongz_hot_tag where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

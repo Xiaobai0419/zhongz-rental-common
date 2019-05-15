@@ -1,0 +1,179 @@
+package com.zhongz.rental.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.zhongz.rental.domain.ZhongzContract;
+import com.zhongz.rental.domain.ZhongzHouse;
+import com.zhongz.rental.domain.ZhongzUser;
+import com.zhongz.rental.mapper.ZhongzContractMapper;
+import com.zhongz.rental.mapper.ZhongzHouseMapper;
+import com.zhongz.rental.mapper.ZhongzUserMapper;
+import com.zhongz.rental.param.ZhongzUserOrderParam;
+import com.zhongz.rental.service.IZhongzContractService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+import com.ruoyi.common.core.text.Convert;
+
+/**
+ * 合同 服务层实现
+ * 
+ * @author ruoyi
+ * @date 2019-04-17
+ */
+@Service
+public class ZhongzContractServiceImpl implements IZhongzContractService
+{
+	@Value("${redis.keys.user}")
+	private String userKey;
+	@Autowired
+	private ZhongzContractMapper zhongzContractMapper;
+	@Autowired
+	private ZhongzUserMapper zhongzUserMapper;
+	@Autowired
+	private ZhongzHouseMapper zhongzHouseMapper;
+	@Autowired
+	private RedisTemplate<String,Object> redisTemplate;
+
+	/**
+     * 查询合同信息
+     * 
+     * @param id 合同ID
+     * @return 合同信息
+     */
+    @Override
+	public ZhongzContract selectZhongzContractById(String id)
+	{
+	    return zhongzContractMapper.selectZhongzContractById(id);
+	}
+	
+	/**
+     * 查询合同列表
+     * 
+     * @param zhongzContract 合同信息
+     * @return 合同集合
+     */
+	@Override
+	public List<ZhongzContract> selectZhongzContractList(ZhongzContract zhongzContract)
+	{
+	    return zhongzContractMapper.selectZhongzContractList(zhongzContract);
+	}
+
+	/**
+	 * 查询用户合同期内所有生效合同列表
+	 *
+	 * @param zhongzUserOrderParam 用户信息
+	 * @return 订单集合
+	 */
+	@Override
+	public List<ZhongzContract> selectZhongzUserContractList(ZhongzUserOrderParam zhongzUserOrderParam)
+	{
+		//从Redis获取用户信息，没有降级去数据库获取
+		String openid = zhongzUserOrderParam.getOpenid();
+		String sessionKey = zhongzUserOrderParam.getSessionKey();
+		HashOperations<String, String, ZhongzUser> hashOperations =  redisTemplate.opsForHash();
+		ZhongzUser user = hashOperations.get(userKey,openid);
+		if(user == null) {
+			user = zhongzUserMapper.selectZhongzUserByOpenIdAndSessionKey(openid,sessionKey);
+		}
+		List<ZhongzContract> contracts = zhongzContractMapper.selectZhongzContractByUser(user.getId());
+		if(contracts != null && contracts.size() > 0) {
+			List<String> houseIds = new ArrayList<>();
+			for(ZhongzContract contract : contracts) {
+				//同一用户同一房子是否有未签约状态有效续约订单，用于显示续约已下订单状态
+				Integer contractByUserAndHouse = zhongzContractMapper.selectZhongzRenewContractByUserAndHouse(user.getId(),contract.getHouseId());
+				if(contractByUserAndHouse > 0) {
+					//用户对该房子已下续约订单
+					contract.setRenewOrder(1);
+				}
+				houseIds.add(contract.getHouseId());
+			}
+			List<ZhongzHouse> houses = zhongzHouseMapper.selectZhongzHouseByIds(houseIds);
+			Map<String,ZhongzHouse> houseMap = new HashMap<>();
+			for(ZhongzHouse house : houses) {
+				houseMap.put(house.getId(),house);
+			}
+			for(ZhongzContract contract : contracts) {
+				contract.setHouse(houseMap.get(contract.getHouseId()));
+			}
+		}
+		return contracts;
+	}
+
+	/**
+	 * 查询用户所有签约合同列表（包括已失效历史合同）
+	 *
+	 * @param zhongzUserOrderParam 用户信息
+	 * @return 订单集合
+	 */
+	@Override
+	public List<ZhongzContract> selectZhongzUserContractAllList(ZhongzUserOrderParam zhongzUserOrderParam)
+	{
+		//从Redis获取用户信息，没有降级去数据库获取
+		String openid = zhongzUserOrderParam.getOpenid();
+		String sessionKey = zhongzUserOrderParam.getSessionKey();
+		HashOperations<String, String, ZhongzUser> hashOperations =  redisTemplate.opsForHash();
+		ZhongzUser user = hashOperations.get(userKey,openid);
+		if(user == null) {
+			user = zhongzUserMapper.selectZhongzUserByOpenIdAndSessionKey(openid,sessionKey);
+		}
+		List<ZhongzContract> contracts = zhongzContractMapper.selectZhongzContractByTenantId(user.getId());
+		if(contracts != null && contracts.size() > 0) {
+			List<String> houseIds = new ArrayList<>();
+			for(ZhongzContract contract : contracts) {
+				houseIds.add(contract.getHouseId());
+			}
+			List<ZhongzHouse> houses = zhongzHouseMapper.selectZhongzHouseByIds(houseIds);
+			Map<String,ZhongzHouse> houseMap = new HashMap<>();
+			for(ZhongzHouse house : houses) {
+				houseMap.put(house.getId(),house);
+			}
+			for(ZhongzContract contract : contracts) {
+				contract.setHouse(houseMap.get(contract.getHouseId()));
+			}
+		}
+		return contracts;
+	}
+
+    /**
+     * 新增合同
+     * 
+     * @param zhongzContract 合同信息
+     * @return 结果
+     */
+	@Override
+	public int insertZhongzContract(ZhongzContract zhongzContract)
+	{
+	    return zhongzContractMapper.insertZhongzContract(zhongzContract);
+	}
+	
+	/**
+     * 修改合同
+     * 
+     * @param zhongzContract 合同信息
+     * @return 结果
+     */
+	@Override
+	public int updateZhongzContract(ZhongzContract zhongzContract)
+	{
+	    return zhongzContractMapper.updateZhongzContract(zhongzContract);
+	}
+
+	/**
+     * 删除合同对象
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	@Override
+	public int deleteZhongzContractByIds(String ids)
+	{
+		return zhongzContractMapper.deleteZhongzContractByIds1(Convert.toStrArray(ids));
+	}
+	
+}

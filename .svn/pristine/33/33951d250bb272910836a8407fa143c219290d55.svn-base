@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzCouponMapper">
+    
+    <resultMap type="ZhongzCoupon" id="ZhongzCouponResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="policyId"    column="policy_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="achieveTime"    column="achieve_time"    />
+        <result property="useTime"    column="use_time"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+        <result property="titile"    column="titile"    />
+        <result property="name"    column="name"    />
+        <result property="preference"    column="preference"    />
+        <result property="rules"    column="rules"    />
+        <result property="expire"    column="expire"    />
+    </resultMap>
+	
+	<sql id="selectZhongzCouponVo">
+        select id, code, policy_id, user_id, status, achieve_time, use_time, house_id, create_by, create_time, update_by, update_time, remark, status1, titile, name, preference, rules, expire from zhongz_coupon
+    </sql>
+	
+    <select id="selectZhongzCouponList" parameterType="ZhongzCoupon" resultMap="ZhongzCouponResult">
+        <include refid="selectZhongzCouponVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="code != null  and code != '' "> and code = #{code}</if>
+             <if test="policyId != null  and policyId != '' "> and policy_id = #{policyId}</if>
+             <if test="userId != null  and userId != '' "> and user_id = #{userId}</if>
+             <if test="status != null "> and status = #{status}</if>
+             <if test="achieveTime != null "> and achieve_time = #{achieveTime}</if>
+             <if test="useTime != null "> and use_time = #{useTime}</if>
+             <if test="houseId != null  and houseId != '' "> and house_id = #{houseId}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+             <if test="titile != null  and titile != '' "> and titile = #{titile}</if>
+             <if test="name != null  and name != '' "> and name = #{name}</if>
+             <if test="preference != null "> and preference = #{preference}</if>
+             <if test="rules != null  and rules != '' "> and rules = #{rules}</if>
+             <if test="expire != null "> and expire = #{expire}</if>
+         </where>
+    </select>
+
+    <select id="selectByCouponCode" resultMap="ZhongzCouponResult">
+        <include refid="selectZhongzCouponVo"/>
+        <where>
+            code = #{couponCode} and status1 = '0'
+        </where>
+    </select>
+
+    <select id="selectZhongzUserCouponUsedList" resultMap="ZhongzCouponResult">
+        <include refid="selectZhongzCouponVo"/>
+        <where>
+            user_id = #{userId} and status = 1 and status1 = '0'
+        </where>
+        <if test="limitStart != null and limitNum != null ">
+            limit #{limitStart},#{limitNum}
+        </if>
+    </select>
+
+    <select id="selectZhongzUserCouponNotUsedList" resultMap="ZhongzCouponResult">
+        <include refid="selectZhongzCouponVo"/>
+        <where>
+            user_id = #{userId} and status = 0 and date_add(achieve_time, interval expire day) &gt; now() and status1 = '0'
+        </where>
+        <if test="limitStart != null and limitNum != null ">
+            limit #{limitStart},#{limitNum}
+        </if>
+    </select>
+
+    <select id="selectZhongzUserCouponExpiredList" resultMap="ZhongzCouponResult">
+        <include refid="selectZhongzCouponVo"/>
+        <where>
+            user_id = #{userId} and status = 0 and date_add(achieve_time, interval expire day) &lt; now() and status1 = '0'
+        </where>
+        <if test="limitStart != null and limitNum != null ">
+            limit #{limitStart},#{limitNum}
+        </if>
+    </select>
+
+    <select id="selectZhongzCouponById" parameterType="String" resultMap="ZhongzCouponResult">
+        <include refid="selectZhongzCouponVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZhongzCoupon" parameterType="ZhongzCoupon">
+        insert into zhongz_coupon
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="code != null  and code != ''  ">code,</if>
+			<if test="policyId != null  and policyId != ''  ">policy_id,</if>
+			<if test="userId != null  and userId != ''  ">user_id,</if>
+			<if test="status != null  ">status,</if>
+			<if test="achieveTime != null  ">achieve_time,</if>
+			<if test="useTime != null  ">use_time,</if>
+			<if test="houseId != null  and houseId != ''  ">house_id,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+			<if test="titile != null  and titile != ''  ">titile,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+			<if test="preference != null  ">preference,</if>
+			<if test="rules != null  and rules != ''  ">rules,</if>
+			<if test="expire != null  ">expire,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="code != null  and code != ''  ">#{code},</if>
+			<if test="policyId != null  and policyId != ''  ">#{policyId},</if>
+			<if test="userId != null  and userId != ''  ">#{userId},</if>
+			<if test="status != null  ">#{status},</if>
+			<if test="achieveTime != null  ">#{achieveTime},</if>
+			<if test="useTime != null  ">#{useTime},</if>
+			<if test="houseId != null  and houseId != ''  ">#{houseId},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+			<if test="titile != null  and titile != ''  ">#{titile},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+			<if test="preference != null  ">#{preference},</if>
+			<if test="rules != null  and rules != ''  ">#{rules},</if>
+			<if test="expire != null  ">#{expire},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzCoupon" parameterType="ZhongzCoupon">
+        update zhongz_coupon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null  and code != ''  ">code = #{code},</if>
+            <if test="policyId != null  and policyId != ''  ">policy_id = #{policyId},</if>
+            <if test="userId != null  and userId != ''  ">user_id = #{userId},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="achieveTime != null  ">achieve_time = #{achieveTime},</if>
+            <if test="useTime != null  ">use_time = #{useTime},</if>
+            <if test="houseId != null  and houseId != ''  ">house_id = #{houseId},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+            <if test="titile != null  and titile != ''  ">titile = #{titile},</if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="preference != null  ">preference = #{preference},</if>
+            <if test="rules != null  and rules != ''  ">rules = #{rules},</if>
+            <if test="expire != null  ">expire = #{expire},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzCouponById1" parameterType="String">
+        update zhongz_coupon set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzCouponByIds1" parameterType="String">
+        update zhongz_coupon set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzCouponById" parameterType="String">
+        delete from zhongz_coupon where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzCouponByIds" parameterType="String">
+        delete from zhongz_coupon where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

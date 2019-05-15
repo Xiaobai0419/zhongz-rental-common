@@ -1,0 +1,95 @@
+package com.zhongz.rental.service.impl;
+
+import java.util.List;
+
+import com.zhongz.rental.domain.ZhongzRoom;
+import com.zhongz.rental.mapper.ZhongzRoomMapper;
+import com.zhongz.rental.service.IZhongzRoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.ruoyi.common.core.text.Convert;
+
+/**
+ * 房间 服务层实现
+ * 
+ * @author ruoyi
+ * @date 2019-04-04
+ */
+@Service
+public class ZhongzRoomServiceImpl implements IZhongzRoomService
+{
+	@Autowired
+	private ZhongzRoomMapper zhongzRoomMapper;
+
+	/**
+     * 查询房间信息
+     * 
+     * @param id 房间ID
+     * @return 房间信息
+     */
+    @Override
+	public ZhongzRoom selectZhongzRoomById(String id)
+	{
+	    return zhongzRoomMapper.selectZhongzRoomById(id);
+	}
+	
+	/**
+     * 查询房间列表
+     * 
+     * @param zhongzRoom 房间信息
+     * @return 房间集合
+     */
+	@Override
+	public List<ZhongzRoom> selectZhongzRoomList(ZhongzRoom zhongzRoom)
+	{
+	    return zhongzRoomMapper.selectZhongzRoomList(zhongzRoom);
+	}
+
+	/**
+	 * 查询指定房屋所有房间集合
+	 *
+	 * @param houseId 房屋ID
+	 * @return 房间集合
+	 */
+	@Override
+	public List<ZhongzRoom> selectZhongzRoomByHouseId(String houseId) {
+		return zhongzRoomMapper.selectZhongzRoomByHouseId(houseId);
+	}
+
+    /**
+     * 新增房间
+     * 
+     * @param zhongzRoom 房间信息
+     * @return 结果
+     */
+	@Override
+	public int insertZhongzRoom(ZhongzRoom zhongzRoom)
+	{
+	    return zhongzRoomMapper.insertZhongzRoom(zhongzRoom);
+	}
+	
+	/**
+     * 修改房间
+     * 
+     * @param zhongzRoom 房间信息
+     * @return 结果
+     */
+	@Override
+	public int updateZhongzRoom(ZhongzRoom zhongzRoom)
+	{
+	    return zhongzRoomMapper.updateZhongzRoom(zhongzRoom);
+	}
+
+	/**
+     * 删除房间对象
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	@Override
+	public int deleteZhongzRoomByIds(String ids)
+	{
+		return zhongzRoomMapper.deleteZhongzRoomByIds1(Convert.toStrArray(ids));
+	}
+	
+}

@@ -1,0 +1,67 @@
+package com.zhongz.rental.service;
+
+import com.zhongz.rental.domain.ZhongzServiceOrder;
+import com.zhongz.rental.param.ZhongzUserServiceOrderParam;
+import com.zhongz.rental.result.base.Result;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * 服务订单 服务层
+ * 
+ * @author ruoyi
+ * @date 2019-05-07
+ */
+public interface IZhongzServiceOrderService 
+{
+	/**
+     * 查询服务订单信息
+     * 
+     * @param id 服务订单ID
+     * @return 服务订单信息
+     */
+	public ZhongzServiceOrder selectZhongzServiceOrderById(String id);
+	
+	/**
+     * 查询服务订单列表
+     * 
+     * @param zhongzServiceOrder 服务订单信息
+     * @return 服务订单集合
+     */
+	public List<ZhongzServiceOrder> selectZhongzServiceOrderList(ZhongzServiceOrder zhongzServiceOrder);
+	
+	/**
+     * 新增报修服务订单
+     * 
+     * @param zhongzUserServiceOrderParam 服务订单信息
+     * @return 结果
+     */
+	public Result insertZhongzServiceOrder(MultipartFile[] files, ZhongzUserServiceOrderParam zhongzUserServiceOrderParam, HttpServletRequest request);
+
+	/**
+	 * 新增保洁服务订单
+	 *
+	 * @param zhongzUserServiceOrderParam 服务订单信息
+	 * @return 结果
+	 */
+	public Result insertZhongzServiceCleaningOrder(MultipartFile[] files, ZhongzUserServiceOrderParam zhongzUserServiceOrderParam, HttpServletRequest request);
+
+	/**
+     * 修改服务订单
+     * 
+     * @param zhongzServiceOrder 服务订单信息
+     * @return 结果
+     */
+	public int updateZhongzServiceOrder(ZhongzServiceOrder zhongzServiceOrder);
+		
+	/**
+     * 删除服务订单信息
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	public int deleteZhongzServiceOrderByIds(String ids);
+	
+}

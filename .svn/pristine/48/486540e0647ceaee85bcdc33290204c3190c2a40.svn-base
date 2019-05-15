@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzServiceOrderMapper">
+    
+    <resultMap type="ZhongzServiceOrder" id="ZhongzServiceOrderResult">
+        <result property="id"    column="id"    />
+        <result property="orderType"    column="order_type"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="orderDayOrder"    column="order_day_order"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="orderTime"    column="order_time"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="tenantId"    column="tenant_id"    />
+        <result property="name"    column="name"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="renterId"    column="renter_id"    />
+        <result property="acceptTime"    column="accept_time"    />
+        <result property="requestServiceType"    column="request_service_type"    />
+        <result property="serviceDescription"    column="service_description"    />
+        <result property="pictures"    column="pictures"    />
+        <result property="serverId"    column="server_id"    />
+        <result property="serverMobile"    column="server_mobile"    />
+        <result property="servicePay"    column="service_pay"    />
+        <result property="wechatPayStatus"    column="wechat_pay_status"    />
+        <result property="wechatOrderId"    column="wechat_order_id"    />
+        <result property="wechatRefundId"    column="wechat_refund_id"    />
+        <result property="serviceStars"    column="service_stars"    />
+        <result property="servicePictures"    column="service_pictures"    />
+        <result property="serviceRemark"    column="service_remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+    </resultMap>
+	
+	<sql id="selectZhongzServiceOrderVo">
+        select id, order_type, order_id,order_day_order, order_status, order_time, house_id, tenant_id,name,mobile, renter_id, accept_time, request_service_type, service_description, pictures, server_id, server_mobile, service_pay, wechat_pay_status, wechat_order_id, wechat_refund_id, service_stars, service_pictures, service_remark, create_by, create_time, update_by, update_time, remark, status1 from zhongz_service_order
+    </sql>
+	
+    <select id="selectZhongzServiceOrderList" parameterType="ZhongzServiceOrder" resultMap="ZhongzServiceOrderResult">
+        <include refid="selectZhongzServiceOrderVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="orderType != null "> and order_type = #{orderType}</if>
+             <if test="orderId != null  and orderId != '' "> and order_id = #{orderId}</if>
+            <if test="orderDayOrder != null "> and order_day_order = #{orderDayOrder}</if>
+             <if test="orderStatus != null "> and order_status = #{orderStatus}</if>
+             <if test="orderTime != null "> and order_time = #{orderTime}</if>
+             <if test="houseId != null  and houseId != '' "> and house_id = #{houseId}</if>
+             <if test="tenantId != null  and tenantId != '' "> and tenant_id = #{tenantId}</if>
+            <if test="name != null  and name != '' "> and name = #{name}</if>
+            <if test="mobile != null  and mobile != '' "> and mobile = #{mobile}</if>
+             <if test="renterId != null  and renterId != '' "> and renter_id = #{renterId}</if>
+             <if test="acceptTime != null "> and accept_time = #{acceptTime}</if>
+             <if test="requestServiceType != null "> and request_service_type = #{requestServiceType}</if>
+             <if test="serviceDescription != null  and serviceDescription != '' "> and service_description = #{serviceDescription}</if>
+             <if test="pictures != null  and pictures != '' "> and pictures = #{pictures}</if>
+             <if test="serverId != null  and serverId != '' "> and server_id = #{serverId}</if>
+             <if test="serverMobile != null  and serverMobile != '' "> and server_mobile = #{serverMobile}</if>
+             <if test="servicePay != null "> and service_pay = #{servicePay}</if>
+             <if test="wechatPayStatus != null "> and wechat_pay_status = #{wechatPayStatus}</if>
+             <if test="wechatOrderId != null  and wechatOrderId != '' "> and wechat_order_id = #{wechatOrderId}</if>
+             <if test="wechatRefundId != null  and wechatRefundId != '' "> and wechat_refund_id = #{wechatRefundId}</if>
+             <if test="serviceStars != null "> and service_stars = #{serviceStars}</if>
+             <if test="servicePictures != null  and servicePictures != '' "> and service_pictures = #{servicePictures}</if>
+             <if test="serviceRemark != null  and serviceRemark != '' "> and service_remark = #{serviceRemark}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzServiceOrderById" parameterType="String" resultMap="ZhongzServiceOrderResult">
+        <include refid="selectZhongzServiceOrderVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectZhongzServiceOrderDayMaxOrder" resultType="Integer">
+        select max(order_day_order) max_day_order FROM `zhongz_service_order` where DATE(update_time) = DATE(now()) and order_type = #{orderType} and status1 = '0'
+    </select>
+
+    <insert id="insertZhongzServiceOrder" parameterType="ZhongzServiceOrder">
+        insert into zhongz_service_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="orderType != null  ">order_type,</if>
+			<if test="orderId != null  and orderId != ''  ">order_id,</if>
+            <if test="orderDayOrder != null ">order_day_order,</if>
+			<if test="orderStatus != null  ">order_status,</if>
+			<if test="orderTime != null  ">order_time,</if>
+			<if test="houseId != null  and houseId != ''  ">house_id,</if>
+			<if test="tenantId != null  and tenantId != ''  ">tenant_id,</if>
+            <if test="name != null  and name != '' ">name,</if>
+            <if test="mobile != null  and mobile != '' ">mobile,</if>
+			<if test="renterId != null  and renterId != ''  ">renter_id,</if>
+			<if test="acceptTime != null  ">accept_time,</if>
+			<if test="requestServiceType != null  ">request_service_type,</if>
+			<if test="serviceDescription != null  and serviceDescription != ''  ">service_description,</if>
+			<if test="pictures != null  and pictures != ''  ">pictures,</if>
+			<if test="serverId != null  and serverId != ''  ">server_id,</if>
+			<if test="serverMobile != null  and serverMobile != ''  ">server_mobile,</if>
+			<if test="servicePay != null  ">service_pay,</if>
+			<if test="wechatPayStatus != null  ">wechat_pay_status,</if>
+			<if test="wechatOrderId != null  and wechatOrderId != ''  ">wechat_order_id,</if>
+			<if test="wechatRefundId != null  and wechatRefundId != ''  ">wechat_refund_id,</if>
+			<if test="serviceStars != null  ">service_stars,</if>
+			<if test="servicePictures != null  and servicePictures != ''  ">service_pictures,</if>
+			<if test="serviceRemark != null  and serviceRemark != ''  ">service_remark,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="orderType != null  ">#{orderType},</if>
+			<if test="orderId != null  and orderId != ''  ">#{orderId},</if>
+            <if test="orderDayOrder != null ">#{orderDayOrder},</if>
+			<if test="orderStatus != null  ">#{orderStatus},</if>
+			<if test="orderTime != null  ">#{orderTime},</if>
+			<if test="houseId != null  and houseId != ''  ">#{houseId},</if>
+			<if test="tenantId != null  and tenantId != ''  ">#{tenantId},</if>
+            <if test="name != null  and name != '' ">#{name},</if>
+            <if test="mobile != null  and mobile != '' ">#{mobile},</if>
+			<if test="renterId != null  and renterId != ''  ">#{renterId},</if>
+			<if test="acceptTime != null  ">#{acceptTime},</if>
+			<if test="requestServiceType != null  ">#{requestServiceType},</if>
+			<if test="serviceDescription != null  and serviceDescription != ''  ">#{serviceDescription},</if>
+			<if test="pictures != null  and pictures != ''  ">#{pictures},</if>
+			<if test="serverId != null  and serverId != ''  ">#{serverId},</if>
+			<if test="serverMobile != null  and serverMobile != ''  ">#{serverMobile},</if>
+			<if test="servicePay != null  ">#{servicePay},</if>
+			<if test="wechatPayStatus != null  ">#{wechatPayStatus},</if>
+			<if test="wechatOrderId != null  and wechatOrderId != ''  ">#{wechatOrderId},</if>
+			<if test="wechatRefundId != null  and wechatRefundId != ''  ">#{wechatRefundId},</if>
+			<if test="serviceStars != null  ">#{serviceStars},</if>
+			<if test="servicePictures != null  and servicePictures != ''  ">#{servicePictures},</if>
+			<if test="serviceRemark != null  and serviceRemark != ''  ">#{serviceRemark},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzServiceOrder" parameterType="ZhongzServiceOrder">
+        update zhongz_service_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderType != null  ">order_type = #{orderType},</if>
+            <if test="orderId != null  and orderId != ''  ">order_id = #{orderId},</if>
+            <if test="orderDayOrder != null ">order_day_order = #{orderDayOrder},</if>
+            <if test="orderStatus != null  ">order_status = #{orderStatus},</if>
+            <if test="orderTime != null  ">order_time = #{orderTime},</if>
+            <if test="houseId != null  and houseId != ''  ">house_id = #{houseId},</if>
+            <if test="tenantId != null  and tenantId != ''  ">tenant_id = #{tenantId},</if>
+            <if test="name != null  and name != '' ">name = #{name},</if>
+            <if test="mobile != null  and mobile != '' ">mobile = #{mobile},</if>
+            <if test="renterId != null  and renterId != ''  ">renter_id = #{renterId},</if>
+            <if test="acceptTime != null  ">accept_time = #{acceptTime},</if>
+            <if test="requestServiceType != null  ">request_service_type = #{requestServiceType},</if>
+            <if test="serviceDescription != null  and serviceDescription != ''  ">service_description = #{serviceDescription},</if>
+            <if test="pictures != null  and pictures != ''  ">pictures = #{pictures},</if>
+            <if test="serverId != null  and serverId != ''  ">server_id = #{serverId},</if>
+            <if test="serverMobile != null  and serverMobile != ''  ">server_mobile = #{serverMobile},</if>
+            <if test="servicePay != null  ">service_pay = #{servicePay},</if>
+            <if test="wechatPayStatus != null  ">wechat_pay_status = #{wechatPayStatus},</if>
+            <if test="wechatOrderId != null  and wechatOrderId != ''  ">wechat_order_id = #{wechatOrderId},</if>
+            <if test="wechatRefundId != null  and wechatRefundId != ''  ">wechat_refund_id = #{wechatRefundId},</if>
+            <if test="serviceStars != null  ">service_stars = #{serviceStars},</if>
+            <if test="servicePictures != null  and servicePictures != ''  ">service_pictures = #{servicePictures},</if>
+            <if test="serviceRemark != null  and serviceRemark != ''  ">service_remark = #{serviceRemark},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzServiceOrderById1" parameterType="String">
+        update zhongz_service_order set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzServiceOrderByIds1" parameterType="String">
+        update zhongz_service_order set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzServiceOrderById" parameterType="String">
+        delete from zhongz_service_order where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzServiceOrderByIds" parameterType="String">
+        delete from zhongz_service_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

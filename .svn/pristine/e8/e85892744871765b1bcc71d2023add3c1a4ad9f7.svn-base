@@ -1,0 +1,128 @@
+package com.zhongz.rental.domain;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import com.ruoyi.common.core.domain.BaseEntity;
+import java.util.Date;
+
+/**
+ * 房间表 zhongz_room
+ * 
+ * @author ruoyi
+ * @date 2019-04-04
+ */
+public class ZhongzRoom extends BaseEntity
+{
+	private static final long serialVersionUID = 1L;
+	
+	/** 所属房屋id */
+	private String houseId;
+	/** 房间租住状态 */
+	private Integer rentStatus;
+	/** 月租金 */
+	private Double monthlyRent;
+	/** 面积 */
+	private Double area;
+	/** 房间标题描述 */
+	private String title;
+	/** 房间描述 */
+	private String description;
+	/** 房间软装配置 */
+	private String softConfigs;
+	/** 房间电器配置 */
+	private String electricConfigs;
+
+	public void setHouseId(String houseId) 
+	{
+		this.houseId = houseId;
+	}
+
+	public String getHouseId() 
+	{
+		return houseId;
+	}
+	public void setRentStatus(Integer rentStatus) 
+	{
+		this.rentStatus = rentStatus;
+	}
+
+	public Integer getRentStatus() 
+	{
+		return rentStatus;
+	}
+	public void setMonthlyRent(Double monthlyRent) 
+	{
+		this.monthlyRent = monthlyRent;
+	}
+
+	public Double getMonthlyRent() 
+	{
+		return monthlyRent;
+	}
+	public void setArea(Double area) 
+	{
+		this.area = area;
+	}
+
+	public Double getArea() 
+	{
+		return area;
+	}
+	public void setTitle(String title) 
+	{
+		this.title = title;
+	}
+
+	public String getTitle() 
+	{
+		return title;
+	}
+	public void setDescription(String description) 
+	{
+		this.description = description;
+	}
+
+	public String getDescription() 
+	{
+		return description;
+	}
+	public void setSoftConfigs(String softConfigs) 
+	{
+		this.softConfigs = softConfigs;
+	}
+
+	public String getSoftConfigs() 
+	{
+		return softConfigs;
+	}
+	public void setElectricConfigs(String electricConfigs) 
+	{
+		this.electricConfigs = electricConfigs;
+	}
+
+	public String getElectricConfigs() 
+	{
+		return electricConfigs;
+	}
+
+    @Override
+	public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("id", getId())
+            .append("houseId", getHouseId())
+            .append("rentStatus", getRentStatus())
+            .append("monthlyRent", getMonthlyRent())
+            .append("area", getArea())
+            .append("title", getTitle())
+            .append("description", getDescription())
+            .append("softConfigs", getSoftConfigs())
+            .append("electricConfigs", getElectricConfigs())
+            .append("createBy", getCreateBy())
+            .append("createTime", getCreateTime())
+            .append("updateBy", getUpdateBy())
+            .append("updateTime", getUpdateTime())
+            .append("remark", getRemark())
+            .append("status1", getStatus1())
+            .toString();
+    }
+}

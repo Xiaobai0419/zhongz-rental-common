@@ -1,0 +1,48 @@
+package com.zhongz.rental.param;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@ApiModel(value="ZhongzHouseParam", description="")
+public class ZhongzHouseParam {
+
+    @ApiModelProperty(value="搜索关键字（小区名或地名）", dataType="String")
+    private String keyWord;
+
+    @ApiModelProperty(value="小区id集合")
+    private List<String> estateIds;
+
+    @ApiModelProperty(value="整租")
+    private Integer solo;
+
+    @ApiModelProperty(value="合租")
+    private Integer joint;
+
+    @ApiModelProperty(value="整租户型")
+    private List<Integer> soloStructures;
+
+    @ApiModelProperty(value="合租户型")
+    private List<Integer> jointStructures;
+
+    @ApiModelProperty(value="小区id", dataType="String")
+    private String estateId;
+
+    @ApiModelProperty(value="租金下限", dataType="Integer")
+    private Integer rentFloor;
+
+    @ApiModelProperty(value="租金上限", dataType="Integer")
+    private Integer rentCeil;
+
+    @ApiModelProperty(value="房屋id集合")
+    private List<String> houseIds;
+
+    @ApiModelProperty(value="排序规则", dataType="Integer")
+    private Integer orderBy = 1;//默认1，默认按热度、更新时间排序
+
+    @ApiModelProperty(value="宣传活动id", dataType="String")
+    private String eventId;
+}

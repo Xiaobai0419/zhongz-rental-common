@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzRoomMapper">
+    
+    <resultMap type="ZhongzRoom" id="ZhongzRoomResult">
+        <result property="id"    column="id"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="rentStatus"    column="rent_status"    />
+        <result property="direction"    column="direction"    />
+        <result property="directionName"    column="direction_name"    />
+        <result property="monthlyRent"    column="monthly_rent"    />
+        <result property="area"    column="area"    />
+        <result property="title"    column="title"    />
+        <result property="description"    column="description"    />
+        <result property="softConfigs"    column="soft_configs"    />
+        <result property="electricConfigs"    column="electric_configs"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+    </resultMap>
+	
+	<sql id="selectZhongzRoomVo">
+        select id, house_id, rent_status, direction, direction_name, monthly_rent, area, title, description, soft_configs, electric_configs, create_by, create_time, update_by, update_time, remark, status1 from zhongz_room
+    </sql>
+	
+    <select id="selectZhongzRoomList" parameterType="ZhongzRoom" resultMap="ZhongzRoomResult">
+        <include refid="selectZhongzRoomVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="houseId != null  and houseId != '' "> and house_id = #{houseId}</if>
+             <if test="rentStatus != null "> and rent_status = #{rentStatus}</if>
+            <if test="direction != null "> and direction = #{direction}</if>
+            <if test="directionName != null  and directionName != '' "> and direction_name = #{directionName}</if>
+             <if test="monthlyRent != null "> and monthly_rent = #{monthlyRent}</if>
+             <if test="area != null "> and area = #{area}</if>
+             <if test="title != null  and title != '' "> and title = #{title}</if>
+             <if test="description != null  and description != '' "> and description = #{description}</if>
+             <if test="softConfigs != null  and softConfigs != '' "> and soft_configs = #{softConfigs}</if>
+             <if test="electricConfigs != null  and electricConfigs != '' "> and electric_configs = #{electricConfigs}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzRoomById" parameterType="String" resultMap="ZhongzRoomResult">
+        <include refid="selectZhongzRoomVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectZhongzRoomByHouseId" parameterType="String" resultMap="ZhongzRoomResult">
+        <include refid="selectZhongzRoomVo"/>
+        where house_id = #{houseId} and status1 = '0'
+    </select>
+
+    <select id="selectZhongzRoomList1" resultType="String">
+        select distinct a.house_id from zhongz_room a,zhongz_house b where a.rent_status = 0
+        and a.house_id = b.id and b.rent_type = 2 and b.frontend = 1
+        and a.status1 = '0' and b.status1 = '0'
+    </select>
+
+    <insert id="insertZhongzRoom" parameterType="ZhongzRoom">
+        insert into zhongz_room
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="houseId != null  and houseId != ''  ">house_id,</if>
+			<if test="rentStatus != null  ">rent_status,</if>
+            <if test="direction != null  ">direction,</if>
+            <if test="directionName != null  and directionName != ''  ">direction_name,</if>
+			<if test="monthlyRent != null  ">monthly_rent,</if>
+			<if test="area != null  ">area,</if>
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="softConfigs != null  and softConfigs != ''  ">soft_configs,</if>
+			<if test="electricConfigs != null  and electricConfigs != ''  ">electric_configs,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="houseId != null  and houseId != ''  ">#{houseId},</if>
+			<if test="rentStatus != null  ">#{rentStatus},</if>
+            <if test="direction != null  ">#{direction},</if>
+            <if test="directionName != null  and directionName != ''  ">#{directionName},</if>
+			<if test="monthlyRent != null  ">#{monthlyRent},</if>
+			<if test="area != null  ">#{area},</if>
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="softConfigs != null  and softConfigs != ''  ">#{softConfigs},</if>
+			<if test="electricConfigs != null  and electricConfigs != ''  ">#{electricConfigs},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzRoom" parameterType="ZhongzRoom">
+        update zhongz_room
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="houseId != null  and houseId != ''  ">house_id = #{houseId},</if>
+            <if test="rentStatus != null  ">rent_status = #{rentStatus},</if>
+            <if test="direction != null  ">direction = #{direction},</if>
+            <if test="directionName != null  and directionName != ''  ">direction_name = #{directionName},</if>
+            <if test="monthlyRent != null  ">monthly_rent = #{monthlyRent},</if>
+            <if test="area != null  ">area = #{area},</if>
+            <if test="title != null  and title != ''  ">title = #{title},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="softConfigs != null  and softConfigs != ''  ">soft_configs = #{softConfigs},</if>
+            <if test="electricConfigs != null  and electricConfigs != ''  ">electric_configs = #{electricConfigs},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzRoomById1" parameterType="String">
+        update zhongz_room set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzRoomByIds1" parameterType="String">
+        update zhongz_room set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzRoomById" parameterType="String">
+        delete from zhongz_room where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzRoomByIds" parameterType="String">
+        delete from zhongz_room where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

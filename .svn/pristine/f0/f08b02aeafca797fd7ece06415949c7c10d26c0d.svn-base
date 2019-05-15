@@ -1,0 +1,14 @@
+package com.zhongz.rental.result.base;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+@Data
+public class Result {
+    @ApiModelProperty(value="成功/失败", dataType="Boolean")
+    private Boolean success;
+    @ApiModelProperty(value="返回状态码", dataType="Integer")
+    private Integer resultCode;
+    @ApiModelProperty(value="返回提示信息", dataType="String")
+    private String message;
+}

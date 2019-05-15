@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzEventMapper">
+    
+    <resultMap type="ZhongzEvent" id="ZhongzEventResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="frontend"    column="frontend"    />
+        <result property="frontendOrder"    column="frontend_order"    />
+        <result property="houseRelated"    column="house_related"    />
+        <result property="picture"    column="picture"    />
+        <result property="description"    column="description"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+    </resultMap>
+	
+	<sql id="selectZhongzEventVo">
+        select id, name, end_time, frontend, frontend_order, house_related, picture, description, create_by, create_time, update_by, update_time, remark, status1 from zhongz_event
+    </sql>
+	
+    <select id="selectZhongzEventList" parameterType="ZhongzEvent" resultMap="ZhongzEventResult">
+        <include refid="selectZhongzEventVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="name != null  and name != '' "> and name = #{name}</if>
+             <if test="endTime != null "> and end_time = #{endTime}</if>
+             <if test="frontend != null "> and frontend = #{frontend}</if>
+             <if test="frontendOrder != null "> and frontend_order = #{frontendOrder}</if>
+             <if test="houseRelated != null "> and house_related = #{houseRelated}</if>
+             <if test="picture != null  and picture != '' "> and picture = #{picture}</if>
+             <if test="description != null  and description != '' "> and description = #{description}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzEventsFrontEnd" resultMap="ZhongzEventResult">
+        <include refid="selectZhongzEventVo"/>
+        where frontend = 1 and status1 = '0'
+        order by frontend_order,update_time desc limit 0,7
+    </select>
+
+    <select id="selectZhongzEventById" parameterType="String" resultMap="ZhongzEventResult">
+        <include refid="selectZhongzEventVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertZhongzEvent" parameterType="ZhongzEvent">
+        insert into zhongz_event
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+			<if test="endTime != null  ">end_time,</if>
+			<if test="frontend != null  ">frontend,</if>
+			<if test="frontendOrder != null  ">frontend_order,</if>
+			<if test="houseRelated != null  ">house_related,</if>
+			<if test="picture != null  and picture != ''  ">picture,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+			<if test="endTime != null  ">#{endTime},</if>
+			<if test="frontend != null  ">#{frontend},</if>
+			<if test="frontendOrder != null  ">#{frontendOrder},</if>
+			<if test="houseRelated != null  ">#{houseRelated},</if>
+			<if test="picture != null  and picture != ''  ">#{picture},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzEvent" parameterType="ZhongzEvent">
+        update zhongz_event
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="endTime != null  ">end_time = #{endTime},</if>
+            <if test="frontend != null  ">frontend = #{frontend},</if>
+            <if test="frontendOrder != null  ">frontend_order = #{frontendOrder},</if>
+            <if test="houseRelated != null  ">house_related = #{houseRelated},</if>
+            <if test="picture != null  and picture != ''  ">picture = #{picture},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzEventById1" parameterType="String">
+        update zhongz_event set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzEventByIds1" parameterType="String">
+        update zhongz_event set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzEventById" parameterType="String">
+        delete from zhongz_event where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzEventByIds" parameterType="String">
+        delete from zhongz_event where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

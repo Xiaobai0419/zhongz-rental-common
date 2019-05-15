@@ -1,0 +1,55 @@
+package com.zhongz.rental.service;
+
+import com.zhongz.rental.domain.ZhongzEstate;
+
+import java.util.List;
+
+/**
+ * 小区 服务层
+ * 
+ * @author ruoyi
+ * @date 2019-04-04
+ */
+public interface IZhongzEstateService 
+{
+	/**
+     * 查询小区信息
+     * 
+     * @param id 小区ID
+     * @return 小区信息
+     */
+	public ZhongzEstate selectZhongzEstateById(String id);
+	
+	/**
+     * 查询小区列表
+     * 
+     * @param zhongzEstate 小区信息
+     * @return 小区集合
+     */
+	public List<ZhongzEstate> selectZhongzEstateList(ZhongzEstate zhongzEstate);
+	
+	/**
+     * 新增小区
+     * 
+     * @param zhongzEstate 小区信息
+     * @return 结果
+     */
+	public int insertZhongzEstate(ZhongzEstate zhongzEstate);
+	
+	/**
+     * 修改小区
+     * 
+     * @param zhongzEstate 小区信息
+     * @return 结果
+     */
+	public int updateZhongzEstate(ZhongzEstate zhongzEstate);
+		
+	/**
+     * 删除小区信息
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	public int deleteZhongzEstateByIds(String ids);
+	
+}

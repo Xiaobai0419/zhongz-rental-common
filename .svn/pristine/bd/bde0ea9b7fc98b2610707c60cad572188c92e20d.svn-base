@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongz.rental.mapper.ZhongzCouponPolicyMapper">
+    
+    <resultMap type="ZhongzCouponPolicy" id="ZhongzCouponPolicyResult">
+        <result property="id"    column="id"    />
+        <result property="titile"    column="titile"    />
+        <result property="name"    column="name"    />
+        <result property="preference"    column="preference"    />
+        <result property="rules"    column="rules"    />
+        <result property="expire"    column="expire"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="status1"    column="status1"    />
+    </resultMap>
+	
+	<sql id="selectZhongzCouponPolicyVo">
+        select id, titile, name, preference, rules, expire, create_by, create_time, update_by, update_time, remark, status1 from zhongz_coupon_policy
+    </sql>
+	
+    <select id="selectZhongzCouponPolicyList" parameterType="ZhongzCouponPolicy" resultMap="ZhongzCouponPolicyResult">
+        <include refid="selectZhongzCouponPolicyVo"/>
+        <where>
+            status1 = '0'
+            <if test="id != null  and id != '' "> and id = #{id}</if>
+             <if test="titile != null  and titile != '' "> and titile = #{titile}</if>
+             <if test="name != null  and name != '' "> and name = #{name}</if>
+             <if test="preference != null "> and preference = #{preference}</if>
+             <if test="rules != null  and rules != '' "> and rules = #{rules}</if>
+             <if test="expire != null "> and expire = #{expire}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectZhongzCouponPolicyById" parameterType="String" resultMap="ZhongzCouponPolicyResult">
+        <include refid="selectZhongzCouponPolicyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertZhongzCouponPolicy" parameterType="ZhongzCouponPolicy">
+        insert into zhongz_coupon_policy
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">id,</if>
+			<if test="titile != null  and titile != ''  ">titile,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+			<if test="preference != null  ">preference,</if>
+			<if test="rules != null  and rules != ''  ">rules,</if>
+			<if test="expire != null  ">expire,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="status1 != null  and status1 != ''  ">status1,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  and id != ''  ">#{id},</if>
+			<if test="titile != null  and titile != ''  ">#{titile},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+			<if test="preference != null  ">#{preference},</if>
+			<if test="rules != null  and rules != ''  ">#{rules},</if>
+			<if test="expire != null  ">#{expire},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="status1 != null  and status1 != ''  ">#{status1},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateZhongzCouponPolicy" parameterType="ZhongzCouponPolicy">
+        update zhongz_coupon_policy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="titile != null  and titile != ''  ">titile = #{titile},</if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="preference != null  ">preference = #{preference},</if>
+            <if test="rules != null  and rules != ''  ">rules = #{rules},</if>
+            <if test="expire != null  ">expire = #{expire},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="status1 != null  and status1 != ''  ">status1 = #{status1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteZhongzCouponPolicyById1" parameterType="String">
+        update zhongz_coupon_policy set status1 = '1' where id = #{id}
+    </update>
+
+    <update id="deleteZhongzCouponPolicyByIds1" parameterType="String">
+        update zhongz_coupon_policy set status1 = '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+	<delete id="deleteZhongzCouponPolicyById" parameterType="String">
+        delete from zhongz_coupon_policy where id = #{id}
+    </delete>
+	
+    <delete id="deleteZhongzCouponPolicyByIds" parameterType="String">
+        delete from zhongz_coupon_policy where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

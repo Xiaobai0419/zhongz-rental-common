@@ -1,0 +1,379 @@
+package com.zhongz.rental.service.impl;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import com.zhongz.rental.common.utils.OrderUtils;
+import com.zhongz.rental.domain.ZhongzContract;
+import com.zhongz.rental.domain.ZhongzHouse;
+import com.zhongz.rental.domain.ZhongzOrder;
+import com.zhongz.rental.domain.ZhongzUser;
+import com.zhongz.rental.mapper.ZhongzContractMapper;
+import com.zhongz.rental.mapper.ZhongzHouseMapper;
+import com.zhongz.rental.mapper.ZhongzOrderMapper;
+import com.zhongz.rental.mapper.ZhongzUserMapper;
+import com.zhongz.rental.param.ZhongzUserOrderParam;
+import com.zhongz.rental.result.base.Result;
+import com.zhongz.rental.service.IZhongzOrderService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * 订单 服务层实现
+ * 
+ * @author ruoyi
+ * @date 2019-04-17
+ */
+@Service
+public class ZhongzOrderServiceImpl implements IZhongzOrderService
+{
+	@Value("${redis.keys.user}")
+	private String userKey;
+	@Value("${redis.keys.order}")
+	private String orderKey;
+	@Value("${redis.keys.contract}")
+	private String contractKey;
+	@Value("${redis.keys.house}")
+	private String houseKey;
+	@Autowired
+	private ZhongzOrderMapper zhongzOrderMapper;
+	@Autowired
+	private ZhongzContractMapper zhongzContractMapper;
+	@Autowired
+	private ZhongzUserMapper zhongzUserMapper;
+	@Autowired
+	private ZhongzHouseMapper zhongzHouseMapper;
+	@Autowired
+	private OrderUtils orderUtils;
+	@Autowired
+	private RedisTemplate<String,Object> redisTemplate;
+
+	/**
+     * 查询订单信息
+     * 
+     * @param id 订单ID
+     * @return 订单信息
+     */
+    @Override
+	public ZhongzOrder selectZhongzOrderById(String id)
+	{
+		//先从缓存获取，每次的更新都会更新缓存，保证最新
+		HashOperations<String, String, ZhongzOrder> orderHashOperations = redisTemplate.opsForHash();
+		HashOperations<String, String, ZhongzContract> contractHashOperations = redisTemplate.opsForHash();
+		HashOperations<String, String, ZhongzHouse> houseHashOperations = redisTemplate.opsForHash();
+		HashOperations<String, String, ZhongzUser> userHashOperations = redisTemplate.opsForHash();
+		ZhongzOrder order = orderHashOperations.get(orderKey,id);
+		if(order == null) {
+			order = zhongzOrderMapper.selectZhongzOrderById(id);
+		}
+		if(order != null) {
+			//缓存获取合同、用户、房屋，没有降级去库查询，注意合同、用户和房屋信息更新时，更新同一个key中对应信息，并整体更新缓存过期时间
+			ZhongzContract contract = contractHashOperations.get(contractKey,order.getContractId());
+			if(contract == null) {
+				contract = zhongzContractMapper.selectZhongzContractById(order.getContractId());
+			}
+			ZhongzHouse house = houseHashOperations.get(houseKey,contract.getHouseId());
+			if(house == null) {
+				house = zhongzHouseMapper.selectZhongzHouseById(contract.getHouseId());
+			}
+			ZhongzUser user = userHashOperations.get(userKey,contract.getTenantId());
+			if(user == null) {
+				user = zhongzUserMapper.selectZhongzUserById(contract.getTenantId());
+			}
+			order.setContract(contract);
+			contract.setHouse(house);
+			contract.setUser(user);
+		}
+		return order;
+	}
+	
+	/**
+     * 查询订单列表 TODO 各种条件的搜索
+     * 
+     * @param zhongzOrder 订单信息
+     * @return 订单集合
+     */
+	@Override
+	public List<ZhongzOrder> selectZhongzOrderList(ZhongzOrder zhongzOrder)
+	{
+		//每次重新去数据库获取
+		List<ZhongzOrder> orders = zhongzOrderMapper.selectZhongzOrderList(zhongzOrder);
+		if(orders.size() > 0) {
+			Map<String,ZhongzOrder> orderMap = new HashMap<>();
+			List<String> contractIds = new ArrayList<>();
+			for(ZhongzOrder order : orders) {
+				orderMap.put(order.getId(),order);
+				contractIds.add(order.getContractId());
+			}
+			//缓存（更新缓存）一份，批量（pipeline）发送，保证缓存中有每次查询的所有数据
+			HashOperations<String, String, ZhongzOrder> orderHashOperations = redisTemplate.opsForHash();
+			orderHashOperations.putAll(orderKey,orderMap);
+			//整体设置缓存时间
+			orderHashOperations.getOperations().expire(orderKey,60L, TimeUnit.SECONDS);
+			//查询关联合同，缓存--先去缓存取，哈希结构批量取，因每次查询条件不同，单条没有的降级去数据库，缓存一份
+			HashOperations<String, String, ZhongzContract> contractHashOperations = redisTemplate.opsForHash();
+			List<ZhongzContract> contracts = contractHashOperations.multiGet(contractKey,contractIds);
+			if(contracts == null || contracts.size() == 0) {
+				//完全没缓存，一次性批量查
+				contracts = zhongzContractMapper.selectZhongzContractByIds(contractIds);
+			}
+			//可能缓存全部，可能一部分，因每次查询条件不同
+			Map<String,ZhongzContract> contractMap = new HashMap<>();
+			for(ZhongzContract contract : contracts) {
+				contractMap.put(contract.getId(),contract);
+			}
+			//更新缓存
+			contractHashOperations.putAll(contractKey,contractMap);
+			//整体设置缓存时间
+			contractHashOperations.getOperations().expire(contractKey,60L, TimeUnit.SECONDS);
+			List<String> houseIds = new ArrayList<>();
+			List<String> userIds = new ArrayList<>();
+			for(ZhongzOrder order : orders) {
+				//如果可能的缓存中没有，单条降级去数据库查
+				ZhongzContract contract = contractMap.get(order.getContractId());
+				if(contract == null) {
+					contract = zhongzContractMapper.selectZhongzContractById(order.getContractId());
+					//单独更新缓存
+					contractHashOperations.put(contractKey,contract.getId(),contract);
+					//整体设置缓存时间--因为上面的单独更新会导致整体缓存不再有缓存时限
+					contractHashOperations.getOperations().expire(contractKey,60L, TimeUnit.SECONDS);
+				}
+				order.setContract(contract);
+				houseIds.add(contract.getHouseId());
+				userIds.add(contract.getTenantId());
+			}
+			//查询关联房屋，缓存
+			HashOperations<String, String, ZhongzHouse> houseHashOperations = redisTemplate.opsForHash();
+			List<ZhongzHouse> houses = houseHashOperations.multiGet(houseKey,houseIds);
+			if(houses == null || houses.size() == 0) {
+				//完全没缓存，一次性批量查
+				houses = zhongzHouseMapper.selectZhongzHouseByIds(houseIds);
+			}
+			//可能缓存全部，可能一部分，因每次查询条件不同
+			Map<String,ZhongzHouse> houseMap = new HashMap<>();
+			for(ZhongzHouse house : houses) {
+				houseMap.put(house.getId(),house);
+			}
+			//更新缓存
+			houseHashOperations.putAll(houseKey,houseMap);
+			//整体设置缓存时间
+			houseHashOperations.getOperations().expire(houseKey,60L, TimeUnit.SECONDS);
+			for(ZhongzOrder order : orders) {
+				ZhongzContract contract = order.getContract();
+				ZhongzHouse house = houseMap.get(contract.getHouseId());
+				//如果可能的缓存中没有，单条降级去数据库查
+				if(house == null) {
+					house = zhongzHouseMapper.selectZhongzHouseById(contract.getHouseId());
+					//单独更新缓存
+					houseHashOperations.put(houseKey,house.getId(),house);
+					//整体设置缓存时间--因为上面的单独更新会导致整体缓存不再有缓存时限
+					houseHashOperations.getOperations().expire(houseKey,60L, TimeUnit.SECONDS);
+				}
+				contract.setHouse(house);
+			}
+			//查询关联租客，缓存
+			HashOperations<String, String, ZhongzUser> userHashOperations = redisTemplate.opsForHash();
+			List<ZhongzUser> users = userHashOperations.multiGet(userKey,userIds);
+			if(users == null || users.size() == 0) {
+				//完全没缓存，一次性批量查
+				users = zhongzUserMapper.selectZhongzUserByIds(userIds);
+			}
+			//可能缓存全部，可能一部分，因每次查询条件不同
+			Map<String,ZhongzUser> userMap = new HashMap<>();
+			for(ZhongzUser user : users) {
+				userMap.put(user.getId(),user);
+			}
+			//更新缓存
+			userHashOperations.putAll(userKey,userMap);
+			//整体设置缓存时间
+			userHashOperations.getOperations().expire(userKey,60L, TimeUnit.SECONDS);
+			for(ZhongzOrder order : orders) {
+				ZhongzContract contract = order.getContract();
+				ZhongzUser user = userMap.get(contract.getTenantId());
+				//如果可能的缓存中没有，单条降级去数据库查
+				if(user == null) {
+					user = zhongzUserMapper.selectZhongzUserById(contract.getTenantId());
+					//单独更新缓存
+					userHashOperations.put(userKey,user.getId(),user);
+					//整体设置缓存时间--因为上面的单独更新会导致整体缓存不再有缓存时限
+					userHashOperations.getOperations().expire(userKey,60L, TimeUnit.SECONDS);
+				}
+				contract.setUser(user);
+			}
+		}
+		return orders;
+	}
+
+    /**
+     * 新增首租订单
+     * 
+     * @param zhongzUserOrderParam 用户预约订单信息
+     * @return 结果
+     */
+	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_COMMITTED,readOnly = false)
+	@Override
+	public Result insertZhongzOrder(ZhongzUserOrderParam zhongzUserOrderParam)
+	{
+		Result result = new Result();
+		//从Redis获取用户信息，没有降级去数据库获取
+		String openid = zhongzUserOrderParam.getOpenid();
+		String sessionKey = zhongzUserOrderParam.getSessionKey();
+		HashOperations<String, String, ZhongzUser> hashOperations =  redisTemplate.opsForHash();
+		ZhongzUser user = hashOperations.get(userKey,openid);
+		if(user == null) {
+			user = zhongzUserMapper.selectZhongzUserByOpenIdAndSessionKey(openid,sessionKey);
+		}
+		//查询房屋信息，尤其整租/合租
+		String houseId = zhongzUserOrderParam.getHouseId();
+		if(StringUtils.isBlank(houseId)) {
+			result.setSuccess(false);
+			result.setResultCode(400);
+			result.setMessage("缺少房屋信息参数");
+			return result;
+		}
+		//查询该用户对该房屋的预约状态订单（合同），查到需要返回错误提示
+		Integer contractByUserAndHouse = zhongzContractMapper.selectZhongzContractByUserAndHouse(user.getId(),houseId);
+		if(contractByUserAndHouse > 0) {
+			result.setSuccess(false);
+			result.setResultCode(403);
+			result.setMessage("您已预约该房屋");
+			return result;
+		}
+		ZhongzHouse house = zhongzHouseMapper.selectZhongzHouseById(houseId);
+		if(house == null) {
+			result.setSuccess(false);
+			result.setResultCode(403);
+			result.setMessage("未查到房屋信息");
+			return result;
+		}
+		//预生成订单
+		ZhongzOrder order = orderUtils.generateOrder("YYDD",0);
+		order.preInsert();
+		order.setOrderStatus(0);
+		order.setOrderTime(new Date());
+		//预生成订单关联合同，将合同id写入订单合同id字段
+		ZhongzContract contract = new ZhongzContract();
+		contract.preInsert();
+		order.setContractId(contract.getId());
+		//用户、房屋信息写入合同
+		contract.setTenantId(user.getId());
+		contract.setHouseId(houseId);
+		contract.setRentType(house.getRentType());
+		//订单插入订单表，合同插入合同表，通过合同id一对一关联，属于该用户，返回成功失败信息
+		zhongzOrderMapper.insertZhongzOrder(order);
+		zhongzContractMapper.insertZhongzContract(contract);
+		result.setSuccess(true);
+		result.setResultCode(200);
+		result.setMessage("预约成功");
+        return result;
+	}
+
+	/**
+	 * 新增续约订单
+	 *
+	 * @param zhongzUserOrderParam 用户预约订单信息
+	 * @return 结果
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.READ_COMMITTED,readOnly = false)
+	@Override
+	public Result insertZhongzRenewOrder(ZhongzUserOrderParam zhongzUserOrderParam)
+	{
+		Result result = new Result();
+		//从Redis获取用户信息，没有降级去数据库获取
+		String openid = zhongzUserOrderParam.getOpenid();
+		String sessionKey = zhongzUserOrderParam.getSessionKey();
+		HashOperations<String, String, ZhongzUser> hashOperations =  redisTemplate.opsForHash();
+		ZhongzUser user = hashOperations.get(userKey,openid);
+		if(user == null) {
+			user = zhongzUserMapper.selectZhongzUserByOpenIdAndSessionKey(openid,sessionKey);
+		}
+		//查询房屋信息，尤其整租/合租
+		String houseId = zhongzUserOrderParam.getHouseId();
+		if(StringUtils.isBlank(houseId)) {
+			result.setSuccess(false);
+			result.setResultCode(400);
+			result.setMessage("缺少房屋信息参数");
+			return result;
+		}
+		//查询该用户对该房屋的预约状态订单（合同），查到需要返回错误提示
+		Integer contractByUserAndHouse = zhongzContractMapper.selectZhongzRenewContractByUserAndHouse(user.getId(),houseId);
+		if(contractByUserAndHouse > 0) {
+			result.setSuccess(false);
+			result.setResultCode(403);
+			result.setMessage("您已预约该房屋");
+			return result;
+		}
+		ZhongzHouse house = zhongzHouseMapper.selectZhongzHouseById(houseId);
+		if(house == null) {
+			result.setSuccess(false);
+			result.setResultCode(403);
+			result.setMessage("未查到房屋信息");
+			return result;
+		}
+		//预生成续约订单
+		ZhongzOrder order = orderUtils.generateOrder("XYDD",1);
+		order.preInsert();
+		//续约订单
+		order.setOrderType(1);
+		order.setOrderStatus(0);
+		order.setOrderTime(new Date());
+		//预生成订单关联合同，将合同id写入订单合同id字段
+		ZhongzContract contract = new ZhongzContract();
+		contract.preInsert();
+		order.setContractId(contract.getId());
+		//用户、房屋信息写入合同
+		contract.setTenantId(user.getId());
+		contract.setHouseId(houseId);
+		contract.setRentType(house.getRentType());
+		//订单插入订单表，合同插入合同表，通过合同id一对一关联，属于该用户，返回成功失败信息
+		zhongzOrderMapper.insertZhongzOrder(order);
+		zhongzContractMapper.insertZhongzContract(contract);
+		result.setSuccess(true);
+		result.setResultCode(200);
+		result.setMessage("预约成功");
+		return result;
+	}
+
+	/**
+     * 修改订单
+     * 
+     * @param zhongzOrder 订单信息
+     * @return 结果
+     */
+	@Override
+	public int updateZhongzOrder(ZhongzOrder zhongzOrder)
+	{
+		//更新库
+
+		//更新订单、合同对应缓存，并整体设置缓存时间
+
+	    return zhongzOrderMapper.updateZhongzOrder(zhongzOrder);
+	}
+
+	/**
+     * 删除订单对象
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 结果
+     */
+	@Override
+	public int deleteZhongzOrderByIds(String ids)
+	{
+		//库数据逻辑删除
+
+		//订单、合同缓存对应field数据删除
+
+		//整体设置缓存时间
+
+		return zhongzOrderMapper.deleteZhongzOrderByIds1(Convert.toStrArray(ids));
+	}
+	
+}
